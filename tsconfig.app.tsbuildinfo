@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/dashboardwithpaywall.tsx","./src/components/loggedin.tsx","./src/components/loggedout.tsx","./src/components/successpage.tsx","./src/components/videopaywall.tsx","./src/components/videopaywallpage.tsx"],"version":"5.8.3"}
