@@ -1,5 +1,5 @@
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { LogoutLink, PortalLink } from "@kinde-oss/kinde-auth-react/components";
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { LogoutLink, PortalLink } from '@kinde-oss/kinde-auth-react/components';
 
 export default function LoggedIn() {
   const { user } = useKindeAuth();
@@ -10,7 +10,7 @@ export default function LoggedIn() {
         <nav className="nav container">
           <h1 className="text-display-3">KindeAuth</h1>
           <div className="profile-blob">
-            {user?.picture !== "" ? (
+            {user?.picture !== '' ? (
               <img
                 className="avatar"
                 src={user?.picture}
@@ -59,7 +59,7 @@ export default function LoggedIn() {
         <div className="container">
           <strong className="text-heading-2">KindeAuth</strong>
           <p className="footer-tagline text-body-3">
-            Visit our{" "}
+            Visit our{' '}
             <a className="link" href="https://kinde.com/docs">
               help center
             </a>

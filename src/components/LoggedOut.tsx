@@ -1,7 +1,7 @@
 import {
   RegisterLink,
   LoginLink,
-} from "@kinde-oss/kinde-auth-react/components";
+} from '@kinde-oss/kinde-auth-react/components';
 
 export default function LoggedOut() {
   return (
@@ -40,7 +40,7 @@ export default function LoggedOut() {
         <div className="container">
           <strong className="text-heading-2">KindeAuth</strong>
           <p className="footer-tagline text-body-3">
-            Visit our{" "}
+            Visit our{' '}
             <a className="link" href="https://kinde.com/docs">
               help center
             </a>
