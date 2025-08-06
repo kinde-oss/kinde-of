@@ -21,6 +21,11 @@ const nextConfig = {
   images: {
     unoptimized: false,
   },
+  
+  // Ensure proper handling for Amplify
+  experimental: {
+    serverComponentsExternalPackages: ['@aws-amplify/ui-react'],
+  },
 };
 
 module.exports = nextConfig;

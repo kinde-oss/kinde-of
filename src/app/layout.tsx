@@ -11,7 +11,9 @@ import outputs from "../../amplify_outputs.json";
 
 // Configure Amplify (this will be updated by Amplify during deployment)
 try {
-  Amplify.configure(outputs);
+  if (outputs && outputs.auth && outputs.auth.userPoolId !== 'placeholder') {
+    Amplify.configure(outputs);
+  }
 } catch (error) {
   console.warn("Amplify configuration not available:", error);
 }
