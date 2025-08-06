@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "auth": {
+    "userPoolId": "placeholder",
+    "userPoolClientId": "placeholder",
+    "identityPoolId": "placeholder"
+  },
+  "data": {
+    "api": {
+      "graphqlEndpoint": "placeholder",
+      "apiKey": "placeholder"
+    }
+  }
+} 

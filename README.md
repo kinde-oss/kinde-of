@@ -1,78 +1,130 @@
-# Kinde Starter Kit - NextJS with full App Router support
+# Kinde + Amplify Next.js App Router Starter Kit
 
-This is a starter kit to get you started with Kinde on Next.js
+This is a Next.js application that combines [Kinde Authentication](https://kinde.com/) with [AWS Amplify](https://aws.amazon.com/amplify/) for deployment. It's built using the App Router and includes SSR (Server-Side Rendering) support.
 
-## Dependancies
+## Features
 
-- node.js (>=18)
-- Kinde account - Get free account [here](https://app.kinde.com/register)
-  - Kinde back-end web application setup
+- ✅ **Kinde Authentication** - Complete auth flow with sign-in, sign-up, and profile management
+- ✅ **AWS Amplify Deployment** - Optimized for Amplify hosting with proper build configuration
+- ✅ **Next.js 15** - Latest version with App Router
+- ✅ **TypeScript** - Full type safety
+- ✅ **SSR Support** - Server-side rendering for better SEO and performance
+- ✅ **Custom Domain Support** - Configured for custom domains on Amplify
 
-## Setup your local environment
+## Getting Started
 
-1. [Fork](https://github.com/kinde-starter-kits/kinde-nextjs-app-router-starter-kit/fork)
-2. Clone the repository
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- AWS Amplify CLI (for deployment)
+- Kinde account and application
+
+### Local Development
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Set up environment variables:**
+   Create a `.env.local` file with your Kinde configuration:
+   ```env
+   KINDE_CLIENT_ID=your_client_id
+   KINDE_CLIENT_SECRET=your_client_secret
+   KINDE_ISSUER_URL=https://your-subdomain.kinde.com
+   KINDE_SITE_URL=http://localhost:3000
+   KINDE_POST_LOGOUT_REDIRECT_URL=http://localhost:3000
+   KINDE_POST_LOGIN_REDIRECT_URL=http://localhost:3000/dashboard
+   ```
+
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Deployment to AWS Amplify
+
+1. **Connect your repository** to AWS Amplify Console
+
+2. **Configure build settings:**
+   - Build command: `npm run build`
+   - Output directory: `.next`
+   - Node.js version: 18.x
+
+3. **Set environment variables** in Amplify Console:
+   - `KINDE_CLIENT_ID`
+   - `KINDE_CLIENT_SECRET`
+   - `KINDE_ISSUER_URL`
+   - `KINDE_SITE_URL` (your production domain)
+   - `KINDE_POST_LOGOUT_REDIRECT_URL`
+   - `KINDE_POST_LOGIN_REDIRECT_URL`
+
+4. **Deploy:**
+   Amplify will automatically build and deploy your application
+
+### Custom Domain Configuration
+
+1. **Add your custom domain** in Amplify Console
+2. **Update Kinde settings** with your production domain
+3. **Configure DNS** as instructed by Amplify
+
+## Project Structure
 
 ```
-git clone https://github.com/<your_github_username>/kinde-nextjs-app-router-starter-kit.git
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── api/               # API routes
+│   │   ├── dashboard/         # Protected dashboard page
+│   │   ├── layout.tsx         # Root layout with Kinde + Amplify
+│   │   └── page.tsx           # Home page
+│   └── middleware.ts          # Kinde auth middleware
+├── amplify/                   # Amplify backend configuration
+│   ├── auth/                  # Auth resource
+│   ├── data/                  # Data resource
+│   └── backend.ts             # Backend definition
+├── amplify.yml               # Amplify build configuration
+├── next.config.js            # Next.js configuration
+└── package.json              # Dependencies
 ```
 
-3. Within the project folder install the dependancies
+## Key Configuration Files
 
-```
-> cd kinde-nextjs-app-router-starter-kit
-> npm i
-```
+### `amplify.yml`
+Optimized build configuration for Amplify deployment with proper caching and artifact handling.
 
-4. Set up your environment
-   
-Rename `.env.local.sample` to `.env.local`
+### `next.config.js`
+Configured for SSR and Amplify deployment with proper asset handling and redirects.
 
-Update the file with your application settings.  These can be found within the backend application details within the Kinde dashboard
-```
-KINDE_CLIENT_ID=<your_kinde_client_id>
-KINDE_CLIENT_SECRET=<your_kinde_client_secret>
-KINDE_ISSUER_URL=https://<your_kinde_subdomain>.kinde.com
-```
+### `src/middleware.ts`
+Kinde authentication middleware that protects routes and handles auth redirects.
 
+## Troubleshooting
 
-## Setup Kinde
+### 404 Errors on Custom Domain
+- Ensure your Kinde application settings include your custom domain
+- Check that Amplify environment variables are correctly set
+- Verify DNS configuration is complete
 
-Within your back-end web application update your settings
+### Build Failures
+- Make sure all dependencies are installed: `npm install`
+- Check that environment variables are set in Amplify Console
+- Verify TypeScript compilation: `npm run build`
 
-**Allowed callback URLs**
+### Authentication Issues
+- Confirm Kinde environment variables are correct
+- Check that redirect URLs match your domain
+- Verify middleware configuration
 
-```
-http://localhost:3000/api/auth/kinde_callback
-```
+## Support
 
-**Allowed logout redirect URLs**
+- [Kinde Documentation](https://kinde.com/docs)
+- [AWS Amplify Documentation](https://docs.aws.amazon.com/amplify/)
+- [Next.js Documentation](https://nextjs.org/docs)
 
-```
-http://localhost:3000
-```
+## License
 
-**Note: When you deploy your application, these URLs will have to be updated accordingly**
-
-
-## Start your app
-
-```
-npm run dev
-```
-
-open `http://localhost:3000` in your browser
-
-## Create your first user
-
-Click on `Sign up` and register your first user for your business!
-
-Within the Kinde Dashboard, you will see your new user listed within the user view. 🚀
-
-# Resources
-- [Kinde Next.js SDK Docs](https://kinde.com/docs/developer-tools/nextjs-sdk/)
-- [Kinde Management API Docs](https://kinde.com/api/docs/#kinde-management-api)
-
-# Get help
-- [Discord](https://discord.gg/wHX6j7wG5d)
-- [Slack](https://join.slack.com/t/thekindecommunity/shared_invite/zt-26hdaavyc-CfOa06vP23guSwK~~OpFMQ)
+This project is licensed under the MIT License.

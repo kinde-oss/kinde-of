@@ -6,6 +6,15 @@ import {
 } from "@kinde-oss/kinde-auth-nextjs/components";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import Link from "next/link";
+import { Amplify } from "aws-amplify";
+import outputs from "../../amplify_outputs.json";
+
+// Configure Amplify (this will be updated by Amplify during deployment)
+try {
+  Amplify.configure(outputs);
+} catch (error) {
+  console.warn("Amplify configuration not available:", error);
+}
 
 export const metadata = {
   title: "Kinde Auth",
