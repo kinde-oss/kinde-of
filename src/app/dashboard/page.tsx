@@ -10,7 +10,7 @@ export default function Dashboard() {
         </p>
       </div>
       <section className="next-steps-section">
-        <h2 className="text-heading-1">Next steps for you</h2>
+        <h2 className="text-heading-1">Next steps for you!</h2>
       </section>
     </div>
   );
