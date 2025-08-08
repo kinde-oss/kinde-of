@@ -43,6 +43,8 @@ export default async function RootLayout({
                       src={user?.picture}
                       alt="user profile avatar"
                       referrerPolicy="no-referrer"
+                      width={100}
+                      height={100}
                     />
                   ) : (
                     <div className="avatar">
