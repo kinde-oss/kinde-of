@@ -1,6 +1,10 @@
+import AnnoyingModal from '@/components/AnnoyingModal';
+
 export default function Dashboard() {
   return (
     <div className="container">
+      <AnnoyingModal />
+
       <div className="card start-hero">
         <p className="text-body-2 start-hero-intro">Woohoo!</p>
         <p className="text-display-2">
