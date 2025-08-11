@@ -1,9 +1,9 @@
-import AnnoyingModal from '@/components/AnnoyingModal';
+import SocialsModal from '@/components/socialsModal';
 
 export default function Dashboard() {
   return (
     <div className="container">
-      <AnnoyingModal />
+      <SocialsModal />
 
       <div className="card start-hero">
         <p className="text-body-2 start-hero-intro">Woohoo!</p>
