@@ -13,4 +13,4 @@ For more information about Kinde, [book a demo](https://kinde.com/product-demo/)
 - Initial release using a Kinde starter kit
 - Highlight a few important LinkedIn posts post auth
 - Force user to open a link at random to view the dashboard
-- Use a Windows 95 inspired theme
+- Use a Windows XP inspired theme
