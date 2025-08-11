@@ -22,7 +22,18 @@ export default async function RootLayout({
   const user = await getUser();
   return (
     <html lang="en">
-      <body>
+      <body
+        style={{
+          backgroundImage: "url('/images/windowsXPBackground.webp')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh',
+          margin: 0,
+          padding: 0,
+        }}
+      >
         <header>
           <nav className="nav container">
             <h1 className="text-display-3">KindeAuth</h1>
