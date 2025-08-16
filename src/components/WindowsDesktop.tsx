@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { linkedinPosts } from '@/lib/linkedinPosts';
+import Image from 'next/image';
 
 interface FilePosition {
   id: number;
@@ -10,14 +11,13 @@ interface FilePosition {
 }
 
 export default function WindowsDesktop() {
-  const [filePositions, setFilePositions] = useState<FilePosition[]>(() => {
-    // Initialize files in a grid pattern
-    return linkedinPosts.map((_, index) => ({
+  const [filePositions, setFilePositions] = useState<FilePosition[]>(() =>
+    linkedinPosts.map((_, index) => ({
       id: index,
       x: 50 + (index % 3) * 120,
       y: 100 + Math.floor(index / 3) * 120,
-    }));
-  });
+    }))
+  );
 
   const [draggedFile, setDraggedFile] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -56,12 +56,10 @@ export default function WindowsDesktop() {
   };
 
   const getFileTitle = (url: string) => {
-    // Extract a meaningful title from the LinkedIn URL
     const match = url.match(/posts\/heykinde_(.+?)-activity/);
-    if (match) {
-      return match[1].replace(/-/g, ' ').substring(0, 20) + '...';
-    }
-    return 'LinkedIn Post';
+    return match
+      ? match[1].replace(/-/g, ' ').substring(0, 20) + '...'
+      : 'LinkedIn Post';
   };
 
   return (
@@ -71,23 +69,6 @@ export default function WindowsDesktop() {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      {/* Desktop Background */}
-      <div className="desktop-background">
-        <img
-          src="/images/windowsXPBackground.webp"
-          alt="Windows XP Background"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }}
-        />
-      </div>
-
-      {/* Desktop Files */}
       {linkedinPosts.map((post, index) => {
         const position = filePositions.find((p) => p.id === index);
         if (!position) return null;
@@ -103,7 +84,7 @@ export default function WindowsDesktop() {
             onMouseDown={(e) => handleMouseDown(e, index)}
           >
             <div className="file-icon">
-              <img
+              <Image
                 src="/images/files/msmsgs.exe_14_5-0.png"
                 alt="File Icon"
                 width={32}
@@ -128,26 +109,14 @@ export default function WindowsDesktop() {
           </div>
         );
       })}
-
       <style jsx>{`
         .windows-desktop {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
+          position: relative;
+          width: 100%;
+          height: calc(100vh - 80px);
           overflow: hidden;
           cursor: default;
           user-select: none;
-          z-index: 1;
-        }
-
-        .desktop-background {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
           z-index: 1;
         }
 
@@ -182,12 +151,6 @@ export default function WindowsDesktop() {
           display: flex;
           align-items: center;
           justify-content: center;
-        }
-
-        .icon-image {
-          image-rendering: pixelated;
-          image-rendering: -moz-crisp-edges;
-          image-rendering: crisp-edges;
         }
 
         .file-label {
