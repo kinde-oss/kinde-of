@@ -187,6 +187,26 @@ export const getStyles = (): string => `
   .xp-option { display: grid; gap: 6px; justify-items: start; align-content: start; padding: 6px; background:#d6d6d6; box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7f7f7f; }
   .xp-option-name { font-weight: 700; font-size: 12px; }
 
+  /* user tile */
+  .xp-user-tile {
+    display: grid;
+    grid-template-rows: 72px auto;
+    gap: 8px;
+    width: 180px;
+    justify-items: center;
+    padding: 10px;
+    background: linear-gradient(#2e6bd0, #2b59a1);
+    color: #fff;
+    border: 2px solid #0b3b89;
+    box-shadow: inset 2px 2px 0 rgba(255,255,255,.25), inset -2px -2px 0 rgba(0,0,0,.25);
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .xp-user-tile:hover { filter: brightness(1.05); }
+  .xp-user-avatar { display:grid; place-items:center; width:72px; height:72px; background:#1d4fb7; border-radius: 6px; box-shadow: inset 1px 1px 0 rgba(255,255,255,.25), inset -1px -1px 0 rgba(0,0,0,.25); }
+  .xp-user-name { font-weight: 700; }
+
   .xp-ms { display:grid; grid-template-columns: repeat(2,9px); grid-auto-rows: 9px; gap:2px; }
   .xp-ms > span { display:block; width:9px; height:9px; }
   .xp-email { font-size: 16px; }

@@ -15,6 +15,7 @@ const DefaultPage: React.FC<KindePageEvent> = ({ context, request }) => {
         <Widget
           heading={context.widget.content.heading}
           description={context.widget.content.description}
+          nonce={(request as any).nonce}
         />
       </DefaultLayout>
     </Root>
