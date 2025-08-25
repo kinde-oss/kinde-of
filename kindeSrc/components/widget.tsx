@@ -109,7 +109,7 @@ export const Widget = (props: {
         dangerouslySetInnerHTML={{
           __html: `
             (function () {
-              console.log('[MSW] Widget script initialized with nonce:', ${JSON.stringify(props.nonce)});
+              try { console.log('[MSW] Widget script nonce ok:', (document.currentScript && document.currentScript.nonce)); } catch(e) {}
               
               var CONNECTIONS = {
                 google: 'conn_019872d36897cefc0235b3e946560f7f',

@@ -28,6 +28,10 @@ export const Root = ({
         <meta content={getKindeCSRF()} name="csrf-token" />
         <meta content="light" name="color-scheme" />
         <meta content="nopagereadaloud" name="google" />
+        <meta
+          content={String((request as any).nonce || '')}
+          name="msw-nonce-prop"
+        />
         <title>{context.widget.content.pageTitle}</title>
 
         <link href={getSVGFaviconUrl()} rel="icon" type="image/svg+xml" />
