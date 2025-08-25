@@ -23,7 +23,11 @@ const styles: {
   },
 };
 
-export const Widget = (props: { heading: string; description: string }) => {
+export const Widget = (props: {
+  heading: string;
+  description: string;
+  nonce?: string;
+}) => {
   return (
     <main className="login-form">
       <div className="xp-window">
@@ -59,6 +63,7 @@ export const Widget = (props: { heading: string; description: string }) => {
       </div>
 
       <script
+        nonce={props.nonce as any}
         dangerouslySetInnerHTML={{
           __html: `
 (() => {

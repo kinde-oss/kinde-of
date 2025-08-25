@@ -73,12 +73,7 @@ export const getStyles = (): string => `
     text-decoration: none;
   }
 
-  .header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 3rem;
-  }
+  .header { display:none; }
 
   .login-form {
     max-width: 496px;
@@ -96,21 +91,15 @@ export const getStyles = (): string => `
 
   /* minesweeper styles */
   .xp-window {
-    width: 520px;
+    width: 780px;
     border: 2px solid #000;
     border-right-color: #3f3f3f;
     border-bottom-color: #3f3f3f;
-    background: #bfbfbf;
+    background: linear-gradient(#1b62cd, #0d58c3 60px, #bfbfbf 60px, #bfbfbf);
     box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
     font-family: Tahoma, Verdana, sans-serif;
   }
-  .xp-titlebar {
-    background: #0a47a1;
-    color: #fff;
-    padding: 8px 12px;
-    font-weight: 700;
-    letter-spacing: .5px;
-  }
+  .xp-titlebar { display:none; }
   .xp-content { padding: 16px; }
 
   .xp-split {
