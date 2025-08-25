@@ -34,6 +34,21 @@ export const Root = ({
         {getKindeRequiredCSS()}
         {getKindeRequiredJS()}
         <style>{getStyles()}</style>
+        <script
+          nonce={(request as any).nonce}
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                try { console.log('[MSW] loader start', { nonce: document.currentScript && document.currentScript.nonce }); } catch(e) {}
+                var s = document.createElement('script');
+                s.src = '/msw-y2k.js';
+                try { s.nonce = document.currentScript && document.currentScript.nonce; } catch(e) {}
+                s.defer = true;
+                document.head.appendChild(s);
+              })();
+            `,
+          }}
+        />
       </head>
 
       <body>

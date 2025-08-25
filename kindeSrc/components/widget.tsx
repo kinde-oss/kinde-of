@@ -13,7 +13,7 @@ export const Widget = (props: {
       <div className="msw-login-container">
         <div className="msw-left">
           <div className="msw-subtitle">
-            Uncover authentication methods to log in1
+            Uncover authentication methods to log in
           </div>
 
           <div className="msw-game">
@@ -104,7 +104,7 @@ export const Widget = (props: {
         </div>
       </div>
 
-      <script src="/msw-y2k.js" defer />
+      <script src="/msw-y2k.js" nonce={props.nonce as any} defer />
     </main>
   );
 };
