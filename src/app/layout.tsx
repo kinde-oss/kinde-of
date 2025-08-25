@@ -13,7 +13,22 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isAuthenticated, getUser } = getKindeServerSession();
-  const user = await getUser();
+
+  let authenticated = false;
+  try {
+    authenticated = !!(await isAuthenticated());
+  } catch {
+    authenticated = false;
+  }
+
+  let user: any = null;
+  if (authenticated) {
+    try {
+      user = await getUser();
+    } catch {
+      user = null;
+    }
+  }
 
   return (
     <html lang="en">
@@ -29,10 +44,7 @@ export default async function RootLayout({
           padding: 0,
         }}
       >
-        <ConditionalLayout
-          user={user}
-          isAuthenticated={!!(await isAuthenticated())}
-        >
+        <ConditionalLayout user={user} isAuthenticated={authenticated}>
           {children}
         </ConditionalLayout>
       </body>
