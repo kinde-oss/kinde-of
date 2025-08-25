@@ -7,8 +7,8 @@
       connectionId: 'conn_019872d36897cefc0235b3e946560f7f',
     },
     {
-      key: 'microsoft',
-      label: 'Microsoft',
+      key: 'facebook',
+      label: 'Facebook',
       connectionId: 'conn_0198a61044542d21e9fa9057f5d14efc',
     },
     {
@@ -219,7 +219,7 @@
     if (key === 'google') {
       return '<span class="xp-g">G</span>';
     }
-    if (key === 'microsoft') {
+    if (key === 'facebook') {
       return (
         '<span class="xp-ms">' +
         '<span style="background:#f25022"></span>' +
