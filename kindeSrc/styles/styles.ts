@@ -96,6 +96,7 @@ export const getStyles = (): string => `
   .msw-reset { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; font-size:16px; cursor:pointer; }
   .msw-reset:active { border:2px inset #c0c0c0; }
   .msw-field { display:grid; grid-template-columns: repeat(8, 30px); grid-auto-rows:30px; gap:1px; background:#808080; border:2px inset #c0c0c0; padding:5px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
+  .msw-field-static { display:grid; grid-template-columns: repeat(8, 30px); grid-auto-rows:30px; gap:1px; background:#808080; border:2px inset #c0c0c0; padding:5px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
   .msw-cell { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:700; transition:all .06s; }
   .msw-cell:hover { background:#d0d0d0; }
   .msw-cell.revealed { border:1px inset #c0c0c0; background:#d0d0d0; }
@@ -108,7 +109,7 @@ export const getStyles = (): string => `
   .msw-panel { background: rgba(255,255,255,0.95); border: 2px outset #c0c0c0; border-radius:10px; padding:22px; min-width:320px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
   .msw-auth { display:block; }
   .msw-auth-title { font-size:18px; font-weight:700; margin-bottom:14px; text-align:center; color:#333; }
-  .msw-oauth { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:4px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; transition: all .2s; }
+  .msw-oauth { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:4px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; transition: all .2s; text-decoration:none; color:inherit; }
   .msw-oauth:hover { background:#f5f5f5; border-color:#ccc; }
   .msw-oauth.google { border-color:#4285f4; color:#4285f4; }
   .msw-oauth.facebook { border-color:#1877f2; color:#1877f2; }
