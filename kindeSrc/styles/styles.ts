@@ -85,45 +85,68 @@ export const getStyles = (): string => `
   }
 
   /* minesweeper styles */
-  .msw-login-container { display:flex; gap:36px; align-items:center; justify-content:center; padding: 24px 28px; background: rgba(0,0,0,.15); border-radius: 28px; box-shadow: 0 30px 80px rgba(0,0,0,.25) inset, 0 8px 30px rgba(0,0,0,.25); }
-  .msw-left { display:flex; flex-direction:column; align-items:center; gap:16px; padding:12px; }
-  .msw-logo { color:#fff; font-size:54px; font-weight:800; letter-spacing: .5px; text-shadow: 0 2px 0 #173d8f, 0 4px 12px rgba(0,0,0,.45); }
-  .msw-subtitle { color:#eaf1ff; font-size:18px; text-align:center; text-shadow:0 1px 0 rgba(0,0,0,.4); }
+  .msw-login-container { display:flex; gap:80px; align-items:center; justify-content:center; padding: 40px; min-height:100vh; }
+  .msw-left { display:flex; flex-direction:column; align-items:center; gap:20px; }
+  .msw-subtitle { color:#fff; font-size:18px; text-align:center; margin-bottom:20px; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
 
-  .msw-game { background:#c0c0c0; border:3px outset #c0c0c0; padding:20px; border-radius:6px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d, 0 10px 30px rgba(0,0,0,.25); }
-  .msw-game-header { background:#c0c0c0; padding:10px; border:2px inset #c0c0c0; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
-  .msw-counter { background:#000; color:#f00; font-family:'Courier New', monospace; font-size:18px; font-weight:700; padding:5px 10px; border:1px inset #c0c0c0; }
-  .msw-reset { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; font-size:16px; cursor:pointer; }
+  .msw-game { background:#c0c0c0; border:4px outset #c0c0c0; padding:15px; border-radius:0; box-shadow: 4px 4px 8px rgba(0,0,0,.3); }
+  .msw-game-header { background:#c0c0c0; padding:8px 12px; border:2px inset #c0c0c0; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+  .msw-counter { background:#000; color:#ff0000; font-family:'Courier New', monospace; font-size:20px; font-weight:700; padding:4px 8px; border:2px inset #c0c0c0; min-width:50px; text-align:center; }
+  .msw-reset { width:40px; height:32px; background:#c0c0c0; border:2px outset #c0c0c0; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .msw-reset:active { border:2px inset #c0c0c0; }
-  .msw-field { display:grid; grid-template-columns: repeat(8, 30px); grid-auto-rows:30px; gap:1px; background:#808080; border:2px inset #c0c0c0; padding:5px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
-  .msw-field-static { display:grid; grid-template-columns: repeat(8, 30px); grid-auto-rows:30px; gap:1px; background:#808080; border:2px inset #c0c0c0; padding:5px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
-  .msw-cell { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:700; transition:all .06s; }
-  .msw-cell:hover { background:#d0d0d0; }
-  .msw-cell.revealed { border:1px inset #c0c0c0; background:#d0d0d0; }
-  .msw-cell.auth { background:#90EE90; border:2px inset #c0c0c0; font-size:10px; color:#333; padding:2px; text-align:center; line-height:1.2; }
-  .msw-found { color:#fff; font-size:12px; margin-top:10px; text-align:center; }
+  .msw-field { display:grid; grid-template-columns: repeat(8, 25px); grid-auto-rows:25px; gap:0; background:#c0c0c0; border:3px inset #c0c0c0; padding:3px; }
+  .msw-field-static { display:grid; grid-template-columns: repeat(8, 25px); grid-auto-rows:25px; gap:0; background:#c0c0c0; border:3px inset #c0c0c0; padding:3px; }
+  .msw-cell { width:25px; height:25px; background:#c0c0c0; border:1px outset #c0c0c0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; }
+  .msw-cell.revealed { border:1px solid #808080; background:#c0c0c0; }
+  .msw-cell.auth { background:#000; color:#fff; font-size:8px; text-align:center; line-height:1; border:1px solid #808080; }
+  .msw-found { color:#fff; font-size:16px; margin-top:20px; text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
 
-  .msw-right { display:flex; flex-direction:column; align-items:center; gap:14px; padding:10px; background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border-radius: 16px; box-shadow: inset 0 2px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.2); }
-  .msw-welcome { color:#fff; font-size:26px; text-shadow:0 2px 0 #173d8f, 0 4px 12px rgba(0,0,0,.45); }
-  .msw-instructions { color:#eaf1ff; font-size:14px; text-align:center; text-shadow:0 1px 0 rgba(0,0,0,.35); line-height:1.4; }
-  .msw-panel { background: rgba(255,255,255,0.95); border: 2px outset #c0c0c0; border-radius:10px; padding:22px; min-width:320px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-  .msw-auth { display:block; }
-  .msw-auth-title { font-size:18px; font-weight:700; margin-bottom:14px; text-align:center; color:#333; }
-  .msw-oauth { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:4px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; transition: all .2s; text-decoration:none; color:inherit; }
-  .msw-oauth:hover { background:#f5f5f5; border-color:#ccc; }
-  .msw-oauth.google { border-color:#4285f4; color:#4285f4; }
-  .msw-oauth.facebook { border-color:#1877f2; color:#1877f2; }
+  .msw-right { display:flex; flex-direction:column; gap:20px; }
+  .msw-auth { margin-bottom:12px; }
+  .msw-oauth { 
+    display:flex; 
+    align-items:center; 
+    gap:16px; 
+    padding:16px 24px; 
+    background:linear-gradient(180deg, #0078D4 0%, #106EBE 100%); 
+    border:2px outset #0078D4; 
+    border-radius:8px; 
+    color:#fff; 
+    font-size:18px; 
+    font-weight:600; 
+    text-decoration:none; 
+    min-width:280px; 
+    transition:all .2s; 
+    box-shadow:2px 2px 4px rgba(0,0,0,.3);
+  }
+  .msw-oauth:hover { 
+    background:linear-gradient(180deg, #106EBE 0%, #0078D4 100%); 
+    border:2px outset #106EBE; 
+  }
+  .msw-oauth:active { border:2px inset #0078D4; }
+  .msw-oauth-icon { 
+    width:40px; 
+    height:40px; 
+    border-radius:6px; 
+    background:#fff; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    font-size:20px; 
+  }
+  .msw-oauth.google .msw-oauth-icon { background:#fff; color:#4285f4; }
+  .msw-oauth.facebook .msw-oauth-icon { background:#1877f2; color:#fff; }
+  .msw-oauth.email .msw-oauth-icon { background:#ffa500; color:#fff; }
+
   .msw-email-form { margin-top: 10px; }
   .msw-fieldset { margin-bottom: 10px; }
-  .msw-fieldset label { display:block; margin-bottom:5px; font-size:12px; color:#333; }
-  .msw-fieldset input { width:100%; padding:8px; border:1px inset #c0c0c0; font-size:12px; }
-  .msw-submit { width:100%; padding:10px; background:#316AC5; color:#fff; border:1px outset #316AC5; cursor:pointer; font-size:12px; }
-  .msw-submit:hover { background:#4A7BC8; }
-  .msw-submit:active { border:1px inset #316AC5; }
-  .msw-muted { text-align:center; color:#666; font-size:14px; }
-  .msw-hint { font-size:11px; color:#666; text-align:center; margin-top:10px; }
+  .msw-fieldset label { display:block; margin-bottom:5px; font-size:12px; color:#fff; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
+  .msw-fieldset input { width:100%; padding:8px; border:2px inset #c0c0c0; font-size:12px; }
+  .msw-submit { width:100%; padding:12px; background:linear-gradient(180deg, #0078D4 0%, #106EBE 100%); color:#fff; border:2px outset #0078D4; cursor:pointer; font-size:14px; font-weight:600; border-radius:4px; }
+  .msw-submit:hover { background:linear-gradient(180deg, #106EBE 0%, #0078D4 100%); }
+  .msw-submit:active { border:2px inset #0078D4; }
   .msw-center { text-align:center; margin-top:10px; }
-  .msw-link { font-size:11px; color:#316AC5; text-decoration: underline; }
+  .msw-link { font-size:12px; color:#fff; text-decoration: underline; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
 
   /* legacy xp styles kept for other parts of the app */
   .xp-window {
