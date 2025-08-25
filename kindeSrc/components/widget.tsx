@@ -7,6 +7,7 @@ export const Widget = (props: {
   heading: string;
   description: string;
   nonce?: string;
+  requestUrl?: string;
 }) => {
   return (
     <main className="login-form">
@@ -109,7 +110,15 @@ export const Widget = (props: {
         dangerouslySetInnerHTML={{
           __html: `
             (function () {
-              try { console.log('[MSW] Widget script nonce ok:', (document.currentScript && document.currentScript.nonce)); } catch(e) {}
+              try {
+                console.log('[MSW] inline start', {
+                  pageNonceMeta: (document.querySelector('meta[name="msw-nonce-prop"]')||{}).content,
+                  currentScriptNonce: document.currentScript && document.currentScript.nonce,
+                  requestUrl: ${JSON.stringify(undefined as any)}
+                });
+              } catch(e) {}
+              // Silence Kinde's default widget logger (custom UI)
+              try { window.getKindeWidget = function(){ return null; }; } catch(e) {}
               
               var CONNECTIONS = {
                 google: 'conn_019872d36897cefc0235b3e946560f7f',

@@ -16,6 +16,7 @@ const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
           heading={context.widget.content.heading}
           description={context.widget.content.description}
           nonce={(request as any).nonce}
+          requestUrl={(request as any).url}
         />
       </DefaultLayout>
     </Root>
