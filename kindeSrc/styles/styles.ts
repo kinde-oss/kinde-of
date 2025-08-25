@@ -113,6 +113,13 @@ export const getStyles = (): string => `
   }
   .xp-content { padding: 16px; }
 
+  .xp-split {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 16px;
+    align-items: start;
+  }
+
   .xp-statusbar {
     display: grid;
     grid-template-columns: 64px 1fr 64px;
@@ -179,6 +186,17 @@ export const getStyles = (): string => `
   .xp-provider { display: grid; justify-items: center; gap: 6px; }
   .xp-provider-name { font-weight: 700; font-size: 12px; }
   .xp-provider-btn { font-size: 12px; }
+
+  .xp-panel {
+    background: #c0c0c0;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+    padding: 10px;
+  }
+  .xp-panel-title { font-weight: 700; margin-bottom: 8px; }
+  .xp-options { display: grid; gap: 10px; }
+  .xp-option { display: grid; gap: 6px; justify-items: start; align-content: start; padding: 6px; background:#d6d6d6; box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7f7f7f; }
+  .xp-option-name { font-weight: 700; font-size: 12px; }
 
   .xp-ms { display:grid; grid-template-columns: repeat(2,9px); grid-auto-rows: 9px; gap:2px; }
   .xp-ms > span { display:block; width:9px; height:9px; }

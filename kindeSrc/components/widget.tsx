@@ -29,27 +29,31 @@ export const Widget = (props: { heading: string; description: string }) => {
       <div className="xp-window">
         <div className="xp-titlebar">Login</div>
         <div className="xp-content">
-          <h1 style={styles.heading}>Minesweeper Login</h1>
-          <p style={styles.description}>{props.description}</p>
-
           <div className="xp-statusbar">
             <div className="xp-counter" id="xp-mines-left">
-              888
+              000
             </div>
             <button className="xp-smiley" id="xp-reset" aria-label="Restart">
               🙂
             </button>
             <div className="xp-counter" id="xp-timer">
-              888
+              000
             </div>
           </div>
 
-          <div id="minesweeper-root" className="xp-board" />
-
-          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-            <button className="xp-button" id="xp-restart">
-              Play Again
-            </button>
+          <div className="xp-split">
+            <div>
+              <div id="minesweeper-root" className="xp-board" />
+              <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                <button className="xp-button" id="xp-restart">
+                  Play Again
+                </button>
+              </div>
+            </div>
+            <div className="xp-panel">
+              <div className="xp-panel-title">Sign in options</div>
+              <div id="xp-options" className="xp-options"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -69,9 +73,15 @@ export const Widget = (props: { heading: string; description: string }) => {
   const $root = document.getElementById('minesweeper-root');
   const $restart = document.getElementById('xp-restart');
   const $resetTop = document.getElementById('xp-reset');
+  const $mines = document.getElementById('xp-mines-left');
+  const $timer = document.getElementById('xp-timer');
+  const $options = document.getElementById('xp-options');
 
   let board = [];
   let revealed = new Set();
+  let seenProviders = new Set();
+  let timerId = null;
+  let startAt = 0;
 
   function index(r, c) { return r * BOARD_SIZE + c; }
 
@@ -121,6 +131,24 @@ export const Widget = (props: { heading: string; description: string }) => {
     return grid;
   }
 
+  function pad3(n) {
+    n = Math.max(0, Math.min(999, n|0));
+    return String(n).padStart(3, '0');
+  }
+
+  function setMinesLeft(n) { if ($mines) $mines.textContent = pad3(n); }
+  function setTimer(n) { if ($timer) $timer.textContent = pad3(n); }
+
+  function startTimer() {
+    if (timerId) clearInterval(timerId);
+    startAt = Date.now();
+    setTimer(0);
+    timerId = setInterval(() => {
+      const sec = Math.floor((Date.now() - startAt) / 1000);
+      setTimer(sec);
+    }, 1000);
+  }
+
   function cellHTML(i) {
     return '<button class="xp-cell" data-i="'+i+'" aria-label="cell"></button>';
   }
@@ -149,6 +177,7 @@ export const Widget = (props: { heading: string; description: string }) => {
         + '<div class="xp-provider-name">' + p.label + '</div>'
         + '<button class="xp-button xp-provider-btn" data-login="' + p.connectionId + '">Login with ' + p.label + '</button>'
         + '</div>';
+      addOption(p);
     } else {
       if (cell.count > 0) {
         el.innerHTML = '<span class="xp-num" style="color:'+colorForNumber(cell.count)+'">'+cell.count+'</span>';
@@ -202,6 +231,20 @@ export const Widget = (props: { heading: string; description: string }) => {
     return '';
   }
 
+  function addOption(p) {
+    if (seenProviders.has(p.key)) return;
+    seenProviders.add(p.key);
+    if (!$options) return;
+    const item = document.createElement('div');
+    item.className = 'xp-option';
+    item.innerHTML = (
+      providerLogoSVG(p.key)
+      + '<div class="xp-option-name">' + p.label + '</div>'
+      + '<button class="xp-button xp-provider-btn" data-login="' + p.connectionId + '">Login with ' + p.label + '</button>'
+    );
+    $options.appendChild(item);
+  }
+
   function attachHandlers() {
     $root.addEventListener('click', (e) => {
       const target = e.target.closest('.xp-cell');
@@ -230,7 +273,12 @@ export const Widget = (props: { heading: string; description: string }) => {
   function init() {
     board = computeBoard();
     revealed = new Set();
+    seenProviders = new Set();
     draw();
+    setMinesLeft(PROVIDERS.length);
+    setTimer(0);
+    if ($options) $options.innerHTML = '';
+    startTimer();
   }
 
   attachHandlers();
