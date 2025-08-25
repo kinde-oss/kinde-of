@@ -94,6 +94,96 @@ export const getStyles = (): string => `
     background: transparent;
   }
 
+  /* minesweeper styles */
+  .xp-window {
+    width: 520px;
+    border: 2px solid #000;
+    border-right-color: #3f3f3f;
+    border-bottom-color: #3f3f3f;
+    background: #bfbfbf;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+    font-family: Tahoma, Verdana, sans-serif;
+  }
+  .xp-titlebar {
+    background: #0a47a1;
+    color: #fff;
+    padding: 8px 12px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+  .xp-content { padding: 16px; }
+
+  .xp-statusbar {
+    display: grid;
+    grid-template-columns: 64px 1fr 64px;
+    align-items: center;
+    gap: 12px;
+    background: #c0c0c0;
+    padding: 8px;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+    margin-bottom: 10px;
+  }
+  .xp-counter {
+    background: #000;
+    color: #f00;
+    font-weight: 700;
+    font-family: 'Digital-7', monospace;
+    text-align: center;
+    padding: 6px 8px;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #3f3f3f, inset -2px -2px 0 #000;
+  }
+  .xp-smiley {
+    background: #c0c0c0;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+    width: 38px; height: 38px; border-radius: 4px; cursor: pointer;
+  }
+
+  .xp-board {
+    display: grid;
+    grid-template-columns: repeat(4, 48px);
+    grid-auto-rows: 48px;
+    gap: 6px;
+    background: #bdbdbd;
+    padding: 10px;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+  }
+
+  .xp-cell {
+    appearance: none;
+    background: #c0c0c0;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .xp-cell-open {
+    background: #e5e5e5;
+    box-shadow: inset 1px 1px 0 #7f7f7f, inset -1px -1px 0 #fff;
+    cursor: default;
+  }
+  .xp-num { font-weight: 700; font-size: 18px; }
+
+  .xp-button {
+    background: #e1e1e1;
+    border: 2px solid #7f7f7f;
+    box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #7f7f7f;
+    padding: 6px 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .xp-provider { display: grid; justify-items: center; gap: 6px; }
+  .xp-provider-name { font-weight: 700; font-size: 12px; }
+  .xp-provider-btn { font-size: 12px; }
+
+  .xp-ms { display:grid; grid-template-columns: repeat(2,9px); grid-auto-rows: 9px; gap:2px; }
+  .xp-ms > span { display:block; width:9px; height:9px; }
+  .xp-email { font-size: 16px; }
+
   @media (min-width: 768px) { 
     .image-header {
       height: 200px;
