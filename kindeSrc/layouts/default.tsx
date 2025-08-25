@@ -10,7 +10,8 @@ const styles: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    background: '#0d58c3',
+    background:
+      'linear-gradient(135deg, #3a6ea5 0%, #004e98 50%, #3a6ea5 100%)',
   },
 };
 
