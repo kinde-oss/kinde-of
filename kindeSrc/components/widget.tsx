@@ -103,8 +103,6 @@ export const Widget = (props: {
           </div>
         </div>
       </div>
-
-      <script src="/msw-y2k.js" nonce={props.nonce as any} defer />
     </main>
   );
 };
