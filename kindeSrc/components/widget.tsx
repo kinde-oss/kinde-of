@@ -13,7 +13,7 @@ export const Widget = (props: {
       <div className="msw-login-container">
         <div className="msw-left">
           <div className="msw-subtitle">
-            Uncover authentication methods to log in
+            Uncover authentication methods to log in1
           </div>
 
           <div className="msw-game">
