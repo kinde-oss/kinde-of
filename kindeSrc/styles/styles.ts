@@ -14,11 +14,6 @@ const kindeVariables = {
 } as const;
 
 export const getStyles = (): string => `
-  @font-face {
-    font-family: Instrument Sans;
-    src: url(https://asset.kindedemo.com/evolve-ai/InstrumentSans-VariableFont_wdth,wght.ttf);
-  }
-
   :root {
     --kinde-base-font-family: ${kindeVariables.baseFontFamily};
     --kinde-control-select-text-border-radius: ${kindeVariables.controlSelectTextBorderRadius};

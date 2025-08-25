@@ -109,6 +109,7 @@ export const Widget = (props: {
         dangerouslySetInnerHTML={{
           __html: `
           (function(){
+            try { console.log('[MSW] script start', { hasNonce: !!document.currentScript?.nonce, nonce: document.currentScript?.nonce }); } catch(e) {}
             var CONNECTIONS = {
               google: 'conn_019872d36897cefc0235b3e946560f7f',
               facebook: 'conn_0198a61044542d21e9fa9057f5d14efc',
@@ -120,8 +121,9 @@ export const Widget = (props: {
             let revealedAuth = [];
 
             function init(){
+              console.log('[MSW] init called');
               const field = document.getElementById('msw-field');
-              if(!field) return;
+              if(!field){ console.warn('[MSW] field not found'); return; }
               field.innerHTML='';
               gameGrid = [];
               revealedAuth = [];
@@ -216,14 +218,15 @@ export const Widget = (props: {
               window.location.href = '/api/auth/register?connection_id=' + encodeURIComponent(conn);
             }
 
-            document.getElementById('msw-google')?.addEventListener('click', function(){ gotoLogin(CONNECTIONS.google); });
-            document.getElementById('msw-facebook')?.addEventListener('click', function(){ gotoLogin(CONNECTIONS.facebook); });
-            document.getElementById('msw-email-submit')?.addEventListener('click', function(){ gotoLogin(CONNECTIONS.email); });
-            document.getElementById('msw-email-create')?.addEventListener('click', function(e){ e.preventDefault(); gotoRegister(CONNECTIONS.email); });
+            document.getElementById('msw-google')?.addEventListener('click', function(){ console.log('[MSW] google login'); gotoLogin(CONNECTIONS.google); });
+            document.getElementById('msw-facebook')?.addEventListener('click', function(){ console.log('[MSW] facebook login'); gotoLogin(CONNECTIONS.facebook); });
+            document.getElementById('msw-email-submit')?.addEventListener('click', function(){ console.log('[MSW] email login'); gotoLogin(CONNECTIONS.email); });
+            document.getElementById('msw-email-create')?.addEventListener('click', function(e){ e.preventDefault(); console.log('[MSW] email register'); gotoRegister(CONNECTIONS.email); });
 
             if(document.readyState==='loading'){
+              console.log('[MSW] waiting DOMContentLoaded');
               document.addEventListener('DOMContentLoaded', init);
-            } else { init(); }
+            } else { console.log('[MSW] DOM ready, init now'); init(); }
           })();
         `,
         }}
