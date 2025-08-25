@@ -12,7 +12,6 @@ export const Widget = (props: {
     <main className="login-form">
       <div className="msw-login-container">
         <div className="msw-left">
-          <div className="msw-logo">🪟 Windows</div>
           <div className="msw-subtitle">
             Uncover authentication methods to log in
           </div>
@@ -106,6 +105,7 @@ export const Widget = (props: {
       </div>
 
       <script
+        nonce={props.nonce as any}
         dangerouslySetInnerHTML={{
           __html: `
           (function(){

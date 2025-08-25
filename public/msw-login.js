@@ -219,7 +219,7 @@
     if (key === 'google') {
       return '<span class="xp-g">G</span>';
     }
-    if (key === 'facebook') {
+    if (key === 'microsoft') {
       return (
         '<span class="xp-ms">' +
         '<span style="background:#f25022"></span>' +

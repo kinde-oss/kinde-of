@@ -90,27 +90,27 @@ export const getStyles = (): string => `
   }
 
   /* minesweeper styles */
-  .msw-login-container { display:flex; gap:32px; align-items:center; justify-content:center; }
-  .msw-left { display:flex; flex-direction:column; align-items:center; gap:14px; padding:10px; }
-  .msw-logo { color:#fff; font-size:48px; font-weight:700; text-shadow:2px 2px 4px rgba(0,0,0,.5); }
-  .msw-subtitle { color:#fff; font-size:18px; text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
+  .msw-login-container { display:flex; gap:36px; align-items:center; justify-content:center; padding: 24px 28px; background: rgba(0,0,0,.15); border-radius: 28px; box-shadow: 0 30px 80px rgba(0,0,0,.25) inset, 0 8px 30px rgba(0,0,0,.25); }
+  .msw-left { display:flex; flex-direction:column; align-items:center; gap:16px; padding:12px; }
+  .msw-logo { color:#fff; font-size:54px; font-weight:800; letter-spacing: .5px; text-shadow: 0 2px 0 #173d8f, 0 4px 12px rgba(0,0,0,.45); }
+  .msw-subtitle { color:#eaf1ff; font-size:18px; text-align:center; text-shadow:0 1px 0 rgba(0,0,0,.4); }
 
-  .msw-game { background:#c0c0c0; border:3px outset #c0c0c0; padding:20px; border-radius:5px; }
-  .msw-game-header { background:#c0c0c0; padding:10px; border:2px inset #c0c0c0; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+  .msw-game { background:#c0c0c0; border:3px outset #c0c0c0; padding:20px; border-radius:6px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d, 0 10px 30px rgba(0,0,0,.25); }
+  .msw-game-header { background:#c0c0c0; padding:10px; border:2px inset #c0c0c0; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
   .msw-counter { background:#000; color:#f00; font-family:'Courier New', monospace; font-size:18px; font-weight:700; padding:5px 10px; border:1px inset #c0c0c0; }
   .msw-reset { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; font-size:16px; cursor:pointer; }
   .msw-reset:active { border:2px inset #c0c0c0; }
-  .msw-field { display:grid; grid-template-columns: repeat(8, 30px); grid-auto-rows:30px; gap:1px; background:#808080; border:2px inset #c0c0c0; padding:5px; }
-  .msw-cell { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:700; transition:all .1s; }
+  .msw-field { display:grid; grid-template-columns: repeat(8, 30px); grid-auto-rows:30px; gap:1px; background:#808080; border:2px inset #c0c0c0; padding:5px; box-shadow: inset 2px 2px 0 #fff,inset -2px -2px 0 #7d7d7d; }
+  .msw-cell { width:30px; height:30px; background:#c0c0c0; border:2px outset #c0c0c0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:700; transition:all .06s; }
   .msw-cell:hover { background:#d0d0d0; }
   .msw-cell.revealed { border:1px inset #c0c0c0; background:#d0d0d0; }
   .msw-cell.auth { background:#90EE90; border:2px inset #c0c0c0; font-size:10px; color:#333; padding:2px; text-align:center; line-height:1.2; }
   .msw-found { color:#fff; font-size:12px; margin-top:10px; text-align:center; }
 
-  .msw-right { display:flex; flex-direction:column; align-items:center; gap:14px; padding:10px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 12px; }
-  .msw-welcome { color:#fff; font-size:24px; text-shadow:2px 2px 4px rgba(0,0,0,.5); }
-  .msw-instructions { color:#fff; font-size:14px; text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,.5); line-height:1.4; }
-  .msw-panel { background: rgba(255,255,255,0.95); border: 2px outset #c0c0c0; border-radius:8px; padding:20px; min-width:300px; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+  .msw-right { display:flex; flex-direction:column; align-items:center; gap:14px; padding:10px; background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border-radius: 16px; box-shadow: inset 0 2px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.2); }
+  .msw-welcome { color:#fff; font-size:26px; text-shadow:0 2px 0 #173d8f, 0 4px 12px rgba(0,0,0,.45); }
+  .msw-instructions { color:#eaf1ff; font-size:14px; text-align:center; text-shadow:0 1px 0 rgba(0,0,0,.35); line-height:1.4; }
+  .msw-panel { background: rgba(255,255,255,0.95); border: 2px outset #c0c0c0; border-radius:10px; padding:22px; min-width:320px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
   .msw-auth { display:block; }
   .msw-auth-title { font-size:18px; font-weight:700; margin-bottom:14px; text-align:center; color:#333; }
   .msw-oauth { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:4px; background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-size:14px; transition: all .2s; }
