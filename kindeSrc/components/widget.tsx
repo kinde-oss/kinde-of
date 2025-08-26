@@ -28,12 +28,40 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     return [];
   };
 
-  // Fixed auth method positions (we'll make these random later)
-  const authMethods = [
-    { position: 9, type: 'google' }, // Row 1, Col 1
-    { position: 25, type: 'facebook' }, // Row 3, Col 1
-    { position: 42, type: 'email' }, // Row 5, Col 2
-  ];
+  // Generate random auth method positions based on URL seed
+  const getAuthMethods = () => {
+    const seedParam = props.requestUrl
+      ? new URL(props.requestUrl).searchParams.get('seed')
+      : null;
+    const seed = seedParam
+      ? parseInt(seedParam)
+      : Math.floor(Math.random() * 100000);
+
+    // Simple seeded random function
+    const seededRandom = (seed: number) => {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
+
+    const positions: number[] = [];
+    const authTypes = ['google', 'facebook', 'email'];
+    let currentSeed = seed;
+
+    for (let i = 0; i < 3; i++) {
+      let pos;
+      do {
+        pos = Math.floor(seededRandom(currentSeed++) * 64);
+      } while (positions.includes(pos));
+      positions.push(pos);
+    }
+
+    return positions.map((pos, index) => ({
+      position: pos,
+      type: authTypes[index],
+    }));
+  };
+
+  const authMethods = getAuthMethods();
 
   const getConnectionId = (type: string) => {
     switch (type) {
@@ -93,7 +121,11 @@ export const Widget: React.FC<WidgetProps> = (props) => {
   // Helper to create reveal URL
   const createRevealUrl = (cellIndex: number) => {
     const newRevealed = [...revealedCells, cellIndex].sort((a, b) => a - b);
-    return `?revealed=${newRevealed.join(',')}`;
+    const seedParam = props.requestUrl
+      ? new URL(props.requestUrl).searchParams.get('seed')
+      : null;
+    const seed = seedParam ? `&seed=${seedParam}` : '';
+    return `?revealed=${newRevealed.join(',')}${seed}&t=${Date.now()}`;
   };
 
   return (
@@ -117,7 +149,10 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 <div className="msw-counter">
                   {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                 </div>
-                <a href="?" className="msw-reset">
+                <a
+                  href={`?seed=${Math.floor(Math.random() * 100000)}`}
+                  className="msw-reset"
+                >
                   😊
                 </a>
                 <div className="msw-counter">000</div>
