@@ -71,15 +71,17 @@ export const getStyles = (): string => `
   .header { display:none; }
 
   .login-form {
+    max-width: 496px;
     width: 100%;
-    min-height: 100vh;
+    margin: 0 auto;
+    padding: 3rem;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    font-family: 'MS Sans Serif', sans-serif;
-    font-size: 11px;
+    border-radius: 32px;
+    height: 100%;
+    background: transparent;
   }
 
   /* minesweeper styles */
@@ -161,11 +163,19 @@ export const getStyles = (): string => `
     color: #000;
   }
 
-  .msw-login-container {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    justify-content: center;
+  .msw-login-container { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 40px; 
+    min-height: 100vh; 
+    background: linear-gradient(135deg, #3a6ea5 0%, #004e98 50%, #3a6ea5 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    gap: 60px;
   }
 
   .msw-game {
