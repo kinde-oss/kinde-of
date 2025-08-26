@@ -36,7 +36,20 @@ export const Root = ({
 
         <link href={getSVGFaviconUrl()} rel="icon" type="image/svg+xml" />
         {getKindeRequiredCSS()}
+        {getKindeRequiredJS()}
         <style>{getStyles()}</style>
+        <script
+          nonce={(request as any).nonce}
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('DOMContentLoaded', function() {
+                if (typeof window.getKindeWidget === 'undefined') {
+                  window.getKindeWidget = function(){ return null; };
+                }
+              });
+            `,
+          }}
+        />
       </head>
 
       <body>

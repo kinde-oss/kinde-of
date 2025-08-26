@@ -10,21 +10,30 @@ type WidgetProps = {
 };
 
 export const Widget: React.FC<WidgetProps> = (props) => {
-  // Parse current game state from URL parameters
-  const url = new URL(props.requestUrl || 'http://localhost');
-  const revealedParam = url.searchParams.get('revealed');
-  const gameState = revealedParam ? revealedParam.split(',').map(Number) : [];
-  // Generate consistent random positions based on URL seed or use default
-  const seedParam = url.searchParams.get('seed');
-  const seed = seedParam ? parseInt(seedParam) : 12345; // Default seed for consistent demo
+  // Safely parse URL parameters with fallback
+  let url: URL;
+  try {
+    url = new URL(props.requestUrl || 'http://localhost');
+  } catch (e) {
+    url = new URL('http://localhost');
+  }
 
-  // Simple seeded random function
+  const revealedParam = url.searchParams.get('revealed');
+  const gameState = revealedParam
+    ? revealedParam
+        .split(',')
+        .map(Number)
+        .filter((n) => !isNaN(n))
+    : [];
+  const seedParam = url.searchParams.get('seed');
+  const seed =
+    seedParam && !isNaN(parseInt(seedParam)) ? parseInt(seedParam) : 12345;
+
   const seededRandom = (seed: number) => {
     let x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
   };
 
-  // Generate random positions for auth methods
   const generateAuthPositions = (seed: number) => {
     const positions: number[] = [];
     const authTypes = ['google', 'facebook', 'email'];
@@ -162,7 +171,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                     {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                   </div>
                   <a
-                    href={`?seed=${Math.floor(Math.random() * 100000)}`}
+                    href={`?seed=${12345 + Math.floor(Date.now() % 100000)}`}
                     className="msw-reset"
                   >
                     😊
