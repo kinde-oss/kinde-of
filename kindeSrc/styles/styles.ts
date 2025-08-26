@@ -102,7 +102,7 @@ export const getStyles = (): string => `
     background: #c0c0c0;
     border: 2px outset #c0c0c0;
     box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
-    width: 400px;
+    width: 460px;
     max-width: 90vw;
   }
 
@@ -288,12 +288,13 @@ export const getStyles = (): string => `
     background: #000; 
     color: #ff0000; 
     font-family: 'Courier New', monospace; 
-    font-size: 20px; 
+    font-size: 24px; 
     font-weight: 700; 
-    padding: 4px 8px; 
+    padding: 6px 10px; 
     border: 2px inset #c0c0c0; 
-    min-width: 50px; 
+    min-width: 54px; 
     text-align: center; 
+    letter-spacing: 1px;
     box-shadow: inset 1px 1px 2px rgba(0,0,0,.8);
   }
   .msw-reset { 
@@ -311,18 +312,19 @@ export const getStyles = (): string => `
   
   .msw-field { 
     display: grid; 
-    grid-template-columns: repeat(8, 25px); 
-    grid-template-rows: repeat(8, 25px);
+    grid-template-columns: repeat(8, 32px); 
+    grid-template-rows: repeat(8, 32px);
     gap: 1px; 
     background: #808080; 
     border: 3px inset #c0c0c0; 
-    padding: 3px; 
+    padding: 4px; 
     width: fit-content;
+    margin: 0 auto;
   }
   
   .msw-cell { 
-    width: 25px; 
-    height: 25px; 
+    width: 32px; 
+    height: 32px; 
     background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
     border: 2px outset #c0c0c0; 
     display: flex; 

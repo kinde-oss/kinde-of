@@ -178,8 +178,8 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                         className="msw-cell hidden"
                         style={{
                           all: 'unset',
-                          width: '25px',
-                          height: '25px',
+                          width: '32px',
+                          height: '32px',
                           background:
                             'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
                           border: '2px outset #c0c0c0',
@@ -187,7 +187,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           cursor: 'pointer',
-                          fontSize: '12px',
+                          fontSize: '14px',
                           fontWeight: 'bold',
                           textDecoration: 'none',
                         }}
