@@ -305,15 +305,21 @@ export const getStyles = (): string => `
     align-items: center; 
     justify-content: center; 
     box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    font-size: 32px;
+    font-weight: bold;
   }
-  .msw-oauth-icon img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
+  .msw-oauth-icon.google-icon {
+    background: #4285f4;
+    color: white;
   }
-  .msw-oauth.email .msw-oauth-icon { background: #FF8C00; }
-  .msw-oauth.google .msw-oauth-icon { background: #fff; }
-  .msw-oauth.facebook .msw-oauth-icon { background: #fff; }
+  .msw-oauth-icon.facebook-icon {
+    background: #1877f2;
+    color: white;
+  }
+  .msw-oauth-icon.email-icon {
+    background: #ff6b35;
+    color: white;
+  }
 
   .msw-email-form { margin-top: 10px; }
   .msw-fieldset { margin-bottom: 10px; }
