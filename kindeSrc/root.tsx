@@ -47,7 +47,8 @@ export const Root = ({
       </head>
 
       <body>
-        <div data-kinde-root="true">{children}</div>
+        {children}
+        <div data-kinde-root="true" style={{ display: 'none' }}></div>
       </body>
     </html>
   );

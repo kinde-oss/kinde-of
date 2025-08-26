@@ -228,8 +228,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
         <div className="msw-instructions-panel">
           <div className="msw-instructions">
             <h3>How to Play</h3>
-            <p>Click squares to reveal login methods!</p>
-            <p>Numbers show how many login methods are nearby.</p>
+            <p>Click to reveal login methods!</p>
           </div>
         </div>
       </div>
