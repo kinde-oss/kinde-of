@@ -10,13 +10,41 @@ type WidgetProps = {
 };
 
 export const Widget: React.FC<WidgetProps> = (props) => {
-  // For now, create a playable game with some cells revealed as demo
-  // In a real implementation, this would be managed by server state
-  const authMethods = [
-    { position: 9, type: 'google' }, // Row 1, Col 1
-    { position: 25, type: 'facebook' }, // Row 3, Col 1
-    { position: 42, type: 'email' }, // Row 5, Col 2
-  ];
+  // Parse current game state from URL parameters
+  const url = new URL(props.requestUrl || 'http://localhost');
+  const revealedParam = url.searchParams.get('revealed');
+  const gameState = revealedParam ? revealedParam.split(',').map(Number) : [];
+  // Generate consistent random positions based on URL seed or use default
+  const seedParam = url.searchParams.get('seed');
+  const seed = seedParam ? parseInt(seedParam) : 12345; // Default seed for consistent demo
+
+  // Simple seeded random function
+  const seededRandom = (seed: number) => {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
+
+  // Generate random positions for auth methods
+  const generateAuthPositions = (seed: number) => {
+    const positions: number[] = [];
+    const authTypes = ['google', 'facebook', 'email'];
+    let currentSeed = seed;
+
+    for (let i = 0; i < 3; i++) {
+      let pos;
+      do {
+        pos = Math.floor(seededRandom(currentSeed++) * 64);
+      } while (positions.includes(pos));
+      positions.push(pos);
+    }
+
+    return positions.map((pos, index) => ({
+      position: pos,
+      type: authTypes[index],
+    }));
+  };
+
+  const authMethods = generateAuthPositions(seed);
 
   const getConnectionId = (type: string) => {
     switch (type) {
@@ -67,13 +95,49 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     return colors[num] || '#000000';
   };
 
-  // Demo state - some cells revealed, auth methods appear as they're uncovered
-  const revealedCells = [
-    9, 25, 42, 8, 10, 16, 17, 18, 24, 26, 32, 33, 34, 35, 41, 43,
-  ]; // Demo revealed cells
+  // Use game state from URL parameters
+  const revealedCells = gameState.length > 0 ? gameState : []; // Start with empty game or parse from URL
   const revealedAuthMethods = authMethods.filter((am) =>
     revealedCells.includes(am.position)
   );
+
+  // Helper function to auto-reveal adjacent cells (like real Minesweeper)
+  const getAdjacentCells = (pos: number): number[] => {
+    const row = Math.floor(pos / 8);
+    const col = pos % 8;
+    const adjacent: number[] = [];
+
+    for (let r = -1; r <= 1; r++) {
+      for (let c = -1; c <= 1; c++) {
+        if (r === 0 && c === 0) continue;
+        const newRow = row + r;
+        const newCol = col + c;
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+          adjacent.push(newRow * 8 + newCol);
+        }
+      }
+    }
+    return adjacent;
+  };
+
+  // Helper function to create new game state URL with auto-reveal
+  const createRevealUrl = (cellIndex: number) => {
+    let newRevealed = [...revealedCells, cellIndex];
+
+    // If this cell has no adjacent auth methods, auto-reveal adjacent cells
+    const adjacencyCount = calculateAdjacency(cellIndex);
+    if (adjacencyCount === 0) {
+      const adjacent = getAdjacentCells(cellIndex);
+      adjacent.forEach((adjIndex) => {
+        if (!newRevealed.includes(adjIndex)) {
+          newRevealed.push(adjIndex);
+        }
+      });
+    }
+
+    const revealedString = newRevealed.sort((a, b) => a - b).join(',');
+    return `?revealed=${revealedString}`;
+  };
 
   return (
     <main className="login-form">
@@ -94,8 +158,13 @@ export const Widget: React.FC<WidgetProps> = (props) => {
             <div className="msw-game-container">
               <div className="msw-game">
                 <div className="msw-game-header">
-                  <div className="msw-counter">003</div>
-                  <a href="/api/auth/login" className="msw-reset">
+                  <div className="msw-counter">
+                    {String(3 - revealedAuthMethods.length).padStart(3, '0')}
+                  </div>
+                  <a
+                    href={`?seed=${Math.floor(Math.random() * 100000)}`}
+                    className="msw-reset"
+                  >
                     😊
                   </a>
                   <div className="msw-counter">000</div>
@@ -148,33 +217,28 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                         </div>
                       );
                     } else {
-                      // Hidden cell - make it clickable with a form
+                      // Hidden cell - make it clickable with a link
                       return (
-                        <form
+                        <a
                           key={index}
-                          method="GET"
-                          style={{ display: 'inline' }}
-                        >
-                          <input type="hidden" name="reveal" value={index} />
-                          <button
-                            type="submit"
-                            className="msw-cell hidden"
-                            style={{
-                              all: 'unset',
-                              width: '25px',
-                              height: '25px',
-                              background:
-                                'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
-                              border: '2px outset #c0c0c0',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              cursor: 'pointer',
-                              fontSize: '12px',
-                              fontWeight: 'bold',
-                            }}
-                          ></button>
-                        </form>
+                          href={createRevealUrl(index)}
+                          className="msw-cell hidden"
+                          style={{
+                            all: 'unset',
+                            width: '25px',
+                            height: '25px',
+                            background:
+                              'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
+                            border: '2px outset #c0c0c0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            textDecoration: 'none',
+                          }}
+                        ></a>
                       );
                     }
                   })}
