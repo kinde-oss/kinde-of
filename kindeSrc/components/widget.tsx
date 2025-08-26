@@ -13,75 +13,86 @@ export const Widget: React.FC<WidgetProps> = (props) => {
   return (
     <main className="login-form">
       <div className="msw-login-container">
-        <div className="msw-left">
-          <div className="msw-subtitle">Choose your authentication method</div>
-
-          <div className="msw-game">
-            <div className="msw-game-header">
-              <div className="msw-counter" id="msw-mines-left">
-                003
-              </div>
-              <button className="msw-reset" id="msw-reset">
-                😊
-              </button>
-              <div className="msw-counter" id="msw-timer">
-                000
-              </div>
+        <div className="msw-window">
+          <div className="msw-title-bar">
+            <div className="msw-window-title">Login</div>
+            <div className="msw-window-controls">
+              <div className="msw-window-btn">−</div>
+              <div className="msw-window-btn">□</div>
+              <div className="msw-window-btn">✕</div>
             </div>
-
-            <div className="msw-field" id="msw-field"></div>
           </div>
 
-          <div className="msw-found">
-            Authentication methods found: <span id="msw-auth-count">0</span>/3
+          <div className="msw-content">
+            <div className="msw-main-title">Minesweeper Login</div>
+
+            <div className="msw-game-container">
+              <div className="msw-game">
+                <div className="msw-game-header">
+                  <div className="msw-counter" id="msw-mines-left">
+                    003
+                  </div>
+                  <button className="msw-reset" id="msw-reset">
+                    😊
+                  </button>
+                  <div className="msw-counter" id="msw-timer">
+                    000
+                  </div>
+                </div>
+
+                <div className="msw-field" id="msw-field"></div>
+              </div>
+
+              <button className="msw-play-again" id="msw-play-again">
+                Play Again
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="msw-right">
-          <div id="msw-start-message" className="msw-start-msg">
-            <p>To begin, uncover a login method</p>
+        <div id="msw-auth-buttons" className="msw-auth-panel">
+          <div
+            className="msw-oauth email"
+            id="msw-email-btn"
+            style={{ display: 'none' }}
+          >
+            <div className="msw-oauth-icon">
+              <img src="/images/files/email.png" alt="Email" />
+            </div>
+            Email
           </div>
 
-          <div id="msw-auth-buttons">
-            <div
-              className="msw-oauth email"
-              id="msw-email-btn"
-              style={{ display: 'none' }}
-            >
-              <div className="msw-oauth-icon">
-                <img src="/images/files/email.png" alt="Email" />
-              </div>
-              Email
+          <div
+            className="msw-oauth google"
+            id="msw-google-btn"
+            style={{ display: 'none' }}
+          >
+            <div className="msw-oauth-icon">
+              <img src="/images/files/google.png" alt="Google" />
             </div>
+            Google
+          </div>
 
-            <div
-              className="msw-oauth google"
-              id="msw-google-btn"
-              style={{ display: 'none' }}
-            >
-              <div className="msw-oauth-icon">
-                <img src="/images/files/google.png" alt="Google" />
-              </div>
-              Google
+          <div
+            className="msw-oauth facebook"
+            id="msw-facebook-btn"
+            style={{ display: 'none' }}
+          >
+            <div className="msw-oauth-icon">
+              <img src="/images/files/facebook.png" alt="Facebook" />
             </div>
-
-            <div
-              className="msw-oauth facebook"
-              id="msw-facebook-btn"
-              style={{ display: 'none' }}
-            >
-              <div className="msw-oauth-icon">
-                <img src="/images/files/facebook.png" alt="Facebook" />
-              </div>
-              Facebook
-            </div>
+            Facebook
           </div>
         </div>
       </div>
 
       <script
+        nonce={props.nonce}
         dangerouslySetInnerHTML={{
           __html: `
+            // Silence Kinde widget warning
+            window.getKindeWidget = function(){ return null; };
+            
             (function() {
               var gameGrid = [];
               var revealedAuth = [];
@@ -112,7 +123,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 updateTimer();
                 
                 // Hide all auth buttons initially
-                document.getElementById('msw-start-message').style.display = 'block';
+                document.getElementById('msw-auth-buttons').style.display = 'none';
                 ['msw-email-btn', 'msw-google-btn', 'msw-facebook-btn'].forEach(function(id) {
                   var el = document.getElementById(id);
                   if (el) el.style.display = 'none';
@@ -170,7 +181,6 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                   field.appendChild(cell);
                 }
                 
-                updateAuthCount();
                 updateMinesLeft();
               }
               
@@ -236,7 +246,6 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                   }
                 }
                 
-                updateAuthCount();
                 updateMinesLeft();
                 
                 // Check if all auth methods found
@@ -250,7 +259,11 @@ export const Widget: React.FC<WidgetProps> = (props) => {
               }
               
               function showAuthButton(authMethod) {
-                document.getElementById('msw-start-message').style.display = 'none';
+                var authButtons = document.getElementById('msw-auth-buttons');
+                if (authButtons) {
+                  authButtons.style.display = 'flex';
+                }
+                
                 var btnId = 'msw-' + authMethod.type + '-btn';
                 var btn = document.getElementById(btnId);
                 if (btn) {
@@ -286,15 +299,19 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 return colors[num] || '#000000';
               }
               
-              function updateAuthCount() {
-                var countEl = document.getElementById('msw-auth-count');
-                if (countEl) countEl.textContent = revealedAuth.length;
-              }
-              
               // Reset button
               var resetBtn = document.getElementById('msw-reset');
               if (resetBtn) {
                 resetBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  init();
+                });
+              }
+              
+              // Play Again button
+              var playAgainBtn = document.getElementById('msw-play-again');
+              if (playAgainBtn) {
+                playAgainBtn.addEventListener('click', function(e) {
                   e.preventDefault();
                   init();
                 });

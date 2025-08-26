@@ -86,22 +86,107 @@ export const getStyles = (): string => `
 
   /* minesweeper styles */
   .msw-login-container { 
-    display:flex; 
-    gap:80px; 
-    align-items:center; 
-    justify-content:center; 
-    padding: 60px 40px; 
-    min-height:100vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 40px; 
+    min-height: 100vh; 
     background: linear-gradient(135deg, #3a6ea5 0%, #004e98 50%, #3a6ea5 100%);
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    gap: 60px;
   }
-  .msw-left { display:flex; flex-direction:column; align-items:center; gap:20px; }
-  .msw-subtitle { color:#fff; font-size:18px; text-align:center; margin-bottom:20px; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
 
+  .msw-window {
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+    width: 400px;
+    max-width: 90vw;
+  }
+
+  .msw-title-bar {
+    background: linear-gradient(90deg, #0054e3 0%, #0054e3 100%);
+    color: white;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #808080;
+  }
+
+  .msw-window-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .msw-window-controls {
+    display: flex;
+    gap: 2px;
+  }
+
+  .msw-window-btn {
+    width: 16px;
+    height: 14px;
+    background: #c0c0c0;
+    border: 1px outset #c0c0c0;
+    font-size: 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .msw-window-btn:active {
+    border: 1px inset #c0c0c0;
+  }
+
+  .msw-content {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .msw-main-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #000;
+  }
+
+  .msw-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .msw-play-again {
+    margin-top: 20px;
+    padding: 8px 20px;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .msw-play-again:active {
+    border: 2px inset #c0c0c0;
+  }
+
+  .msw-auth-panel {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
   .msw-game { 
     background: linear-gradient(145deg, #e6e6e6, #b8b8b8);
     border: 4px ridge #c0c0c0; 
@@ -151,6 +236,7 @@ export const getStyles = (): string => `
     background: #808080; 
     border: 3px inset #c0c0c0; 
     padding: 3px; 
+    width: fit-content;
   }
   
   .msw-cell { 
@@ -186,16 +272,7 @@ export const getStyles = (): string => `
     border: 1px solid #808080; 
     padding: 2px;
   }
-  .msw-found { color:#fff; font-size:16px; margin-top:20px; text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
 
-  .msw-right { display:flex; flex-direction:column; gap:20px; align-items:center; }
-  .msw-start-msg { 
-    color: #fff; 
-    font-size: 18px; 
-    text-align: center; 
-    text-shadow: 1px 1px 2px rgba(0,0,0,.5);
-    padding: 20px;
-  }
   .msw-oauth { 
     display: flex; 
     align-items: center; 
