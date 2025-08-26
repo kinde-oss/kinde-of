@@ -71,17 +71,15 @@ export const getStyles = (): string => `
   .header { display:none; }
 
   .login-form {
-    max-width: 496px;
     width: 100%;
-    margin: 0 auto;
-    padding: 3rem;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 32px;
-    height: 100%;
-    background: transparent;
+    padding: 20px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    font-family: 'MS Sans Serif', sans-serif;
+    font-size: 11px;
   }
 
   /* minesweeper styles */
@@ -151,6 +149,9 @@ export const getStyles = (): string => `
   .msw-content {
     padding: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .msw-main-title {

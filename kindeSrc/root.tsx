@@ -38,12 +38,7 @@ export const Root = ({
         {getKindeRequiredCSS()}
         {getKindeRequiredJS()}
         <style>{getStyles()}</style>
-        <script
-          nonce={(request as any).nonce}
-          dangerouslySetInnerHTML={{
-            __html: `window.getKindeWidget = function(){ return null; };`,
-          }}
-        />
+        <script src="/kinde-widget.js" nonce={(request as any).nonce}></script>
       </head>
 
       <body>
