@@ -10,50 +10,30 @@ type WidgetProps = {
 };
 
 export const Widget: React.FC<WidgetProps> = (props) => {
-  // Safely parse URL parameters with fallback
-  let url: URL;
-  try {
-    url = new URL(props.requestUrl || 'http://localhost');
-  } catch (e) {
-    url = new URL('http://localhost');
-  }
-
-  const revealedParam = url.searchParams.get('revealed');
-  const gameState = revealedParam
-    ? revealedParam
-        .split(',')
-        .map(Number)
-        .filter((n) => !isNaN(n))
-    : [];
-  const seedParam = url.searchParams.get('seed');
-  const seed =
-    seedParam && !isNaN(parseInt(seedParam)) ? parseInt(seedParam) : 12345;
-
-  const seededRandom = (seed: number) => {
-    let x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-  };
-
-  const generateAuthPositions = (seed: number) => {
-    const positions: number[] = [];
-    const authTypes = ['google', 'facebook', 'email'];
-    let currentSeed = seed;
-
-    for (let i = 0; i < 3; i++) {
-      let pos;
-      do {
-        pos = Math.floor(seededRandom(currentSeed++) * 64);
-      } while (positions.includes(pos));
-      positions.push(pos);
+  // Parse revealed cells from URL if available
+  const getRevealedCells = () => {
+    if (!props.requestUrl) return [];
+    try {
+      const url = new URL(props.requestUrl);
+      const revealed = url.searchParams.get('revealed');
+      if (revealed) {
+        return revealed
+          .split(',')
+          .map((n) => parseInt(n))
+          .filter((n) => !isNaN(n) && n >= 0 && n < 64);
+      }
+    } catch (e) {
+      // Ignore URL parsing errors
     }
-
-    return positions.map((pos, index) => ({
-      position: pos,
-      type: authTypes[index],
-    }));
+    return [];
   };
 
-  const authMethods = generateAuthPositions(seed);
+  // Fixed auth method positions (we'll make these random later)
+  const authMethods = [
+    { position: 9, type: 'google' }, // Row 1, Col 1
+    { position: 25, type: 'facebook' }, // Row 3, Col 1
+    { position: 42, type: 'email' }, // Row 5, Col 2
+  ];
 
   const getConnectionId = (type: string) => {
     switch (type) {
@@ -104,48 +84,16 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     return colors[num] || '#000000';
   };
 
-  // Use game state from URL parameters
-  const revealedCells = gameState.length > 0 ? gameState : []; // Start with empty game or parse from URL
+  // Use URL state or start with empty game
+  const revealedCells = getRevealedCells();
   const revealedAuthMethods = authMethods.filter((am) =>
     revealedCells.includes(am.position)
   );
 
-  // Helper function to auto-reveal adjacent cells (like real Minesweeper)
-  const getAdjacentCells = (pos: number): number[] => {
-    const row = Math.floor(pos / 8);
-    const col = pos % 8;
-    const adjacent: number[] = [];
-
-    for (let r = -1; r <= 1; r++) {
-      for (let c = -1; c <= 1; c++) {
-        if (r === 0 && c === 0) continue;
-        const newRow = row + r;
-        const newCol = col + c;
-        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-          adjacent.push(newRow * 8 + newCol);
-        }
-      }
-    }
-    return adjacent;
-  };
-
-  // Helper function to create new game state URL with auto-reveal
+  // Helper to create reveal URL
   const createRevealUrl = (cellIndex: number) => {
-    let newRevealed = [...revealedCells, cellIndex];
-
-    // If this cell has no adjacent auth methods, auto-reveal adjacent cells
-    const adjacencyCount = calculateAdjacency(cellIndex);
-    if (adjacencyCount === 0) {
-      const adjacent = getAdjacentCells(cellIndex);
-      adjacent.forEach((adjIndex) => {
-        if (!newRevealed.includes(adjIndex)) {
-          newRevealed.push(adjIndex);
-        }
-      });
-    }
-
-    const revealedString = newRevealed.sort((a, b) => a - b).join(',');
-    return `?revealed=${revealedString}`;
+    const newRevealed = [...revealedCells, cellIndex].sort((a, b) => a - b);
+    return `?revealed=${newRevealed.join(',')}`;
   };
 
   return (
@@ -170,10 +118,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                   <div className="msw-counter">
                     {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                   </div>
-                  <a
-                    href={`?seed=${12345 + Math.floor(Date.now() % 100000)}`}
-                    className="msw-reset"
-                  >
+                  <a href="?" className="msw-reset">
                     😊
                   </a>
                   <div className="msw-counter">000</div>
