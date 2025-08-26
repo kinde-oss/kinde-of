@@ -182,6 +182,34 @@ export const getStyles = (): string => `
     flex-direction: column;
     gap: 15px;
     align-items: center;
+    min-width: 200px;
+  }
+
+  .msw-instructions {
+    text-align: center;
+    padding: 15px;
+    background: #f0f0f0;
+    border: 2px inset #c0c0c0;
+    border-radius: 4px;
+  }
+
+  .msw-instructions h3 {
+    margin: 0 0 10px 0;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .msw-instructions p {
+    margin: 5px 0;
+    color: #333;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .msw-cell.hidden:hover {
+    background: linear-gradient(145deg, #f0f0f0, #d0d0d0) !important;
+    border: 2px inset #c0c0c0 !important;
   }
   .msw-game { 
     background: linear-gradient(145deg, #e6e6e6, #b8b8b8);

@@ -10,89 +10,13 @@ type WidgetProps = {
 };
 
 export const Widget: React.FC<WidgetProps> = (props) => {
-  // gen random positions for auth methods
-  const getRandomPositions = () => {
-    const positions: number[] = [];
-    const gridSize = 64; // 8x8 = 64 cells
-    const authMethods = ['google', 'facebook', 'email'];
-
-    for (let i = 0; i < 3; i++) {
-      let pos;
-      do {
-        pos = Math.floor(Math.random() * gridSize);
-      } while (positions.includes(pos));
-      positions.push(pos);
-    }
-
-    return positions.map((pos, index) => ({
-      position: pos,
-      type: authMethods[index],
-    }));
-  };
-
-  const authPositions = getRandomPositions();
-
-  // Calculate adjacency counts
-  const calculateAdjacency = (pos: number) => {
-    const row = Math.floor(pos / 8);
-    const col = pos % 8;
-    let count = 0;
-
-    for (let r = -1; r <= 1; r++) {
-      for (let c = -1; c <= 1; c++) {
-        if (r === 0 && c === 0) continue;
-        const newRow = row + r;
-        const newCol = col + c;
-        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-          const newPos = newRow * 8 + newCol;
-          if (authPositions.some((ap) => ap.position === newPos)) {
-            count++;
-          }
-        }
-      }
-    }
-    return count;
-  };
-
-  // Define cell types
-  type AuthCell = {
-    type: 'auth';
-    authType: string;
-    revealed: boolean;
-  };
-
-  type NumberCell = {
-    type: 'number';
-    count: number;
-    revealed: boolean;
-  };
-
-  type Cell = AuthCell | NumberCell;
-
-  // Create grid with random placements
-  const createGrid = (): Cell[] => {
-    const grid: Cell[] = [];
-    for (let i = 0; i < 64; i++) {
-      const authMethod = authPositions.find((ap) => ap.position === i);
-      if (authMethod) {
-        grid.push({
-          type: 'auth',
-          authType: authMethod.type,
-          revealed: true,
-        });
-      } else {
-        const count = calculateAdjacency(i);
-        grid.push({
-          type: 'number',
-          count: count,
-          revealed: true,
-        });
-      }
-    }
-    return grid;
-  };
-
-  const grid = createGrid();
+  // For now, create a playable game with some cells revealed as demo
+  // In a real implementation, this would be managed by server state
+  const authMethods = [
+    { position: 9, type: 'google' }, // Row 1, Col 1
+    { position: 25, type: 'facebook' }, // Row 3, Col 1
+    { position: 42, type: 'email' }, // Row 5, Col 2
+  ];
 
   const getConnectionId = (type: string) => {
     switch (type) {
@@ -105,6 +29,27 @@ export const Widget: React.FC<WidgetProps> = (props) => {
       default:
         return '';
     }
+  };
+
+  const calculateAdjacency = (pos: number) => {
+    const row = Math.floor(pos / 8);
+    const col = pos % 8;
+    let count = 0;
+
+    for (let r = -1; r <= 1; r++) {
+      for (let c = -1; c <= 1; c++) {
+        if (r === 0 && c === 0) continue;
+        const newRow = row + r;
+        const newCol = col + c;
+        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+          const newPos = newRow * 8 + newCol;
+          if (authMethods.some((am) => am.position === newPos)) {
+            count++;
+          }
+        }
+      }
+    }
+    return count;
   };
 
   const getNumberColor = (num: number) => {
@@ -121,6 +66,14 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     ];
     return colors[num] || '#000000';
   };
+
+  // Demo state - some cells revealed, auth methods appear as they're uncovered
+  const revealedCells = [
+    9, 25, 42, 8, 10, 16, 17, 18, 24, 26, 32, 33, 34, 35, 41, 43,
+  ]; // Demo revealed cells
+  const revealedAuthMethods = authMethods.filter((am) =>
+    revealedCells.includes(am.position)
+  );
 
   return (
     <main className="login-form">
@@ -149,62 +102,117 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 </div>
 
                 <div className="msw-field">
-                  {grid.map((cell, index) => (
-                    <div
-                      key={index}
-                      className={`msw-cell revealed ${cell.type === 'auth' ? 'auth' : ''}`}
-                      style={{
-                        color:
-                          cell.type === 'number' && cell.count > 0
-                            ? getNumberColor(cell.count)
-                            : 'transparent',
-                        backgroundColor:
-                          cell.type === 'auth'
-                            ? cell.authType === 'google'
-                              ? '#4285f4'
-                              : cell.authType === 'facebook'
-                                ? '#1877f2'
-                                : cell.authType === 'email'
-                                  ? '#ff6b35'
-                                  : '#fff'
-                            : undefined,
-                      }}
-                    >
-                      {cell.type === 'auth'
-                        ? cell.authType === 'google'
-                          ? 'G'
-                          : cell.authType === 'facebook'
-                            ? 'f'
-                            : cell.authType === 'email'
-                              ? '✉'
-                              : ''
-                        : cell.count > 0
-                          ? cell.count
-                          : ''}
-                    </div>
-                  ))}
+                  {Array.from({ length: 64 }, (_, index) => {
+                    const isRevealed = revealedCells.includes(index);
+                    const authMethod = authMethods.find(
+                      (am) => am.position === index
+                    );
+                    const isAuth = !!authMethod;
+                    const adjacencyCount = calculateAdjacency(index);
+
+                    if (isRevealed) {
+                      // Revealed cell
+                      return (
+                        <div
+                          key={index}
+                          className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
+                          style={{
+                            color:
+                              !isAuth && adjacencyCount > 0
+                                ? getNumberColor(adjacencyCount)
+                                : 'transparent',
+                            backgroundColor: isAuth
+                              ? authMethod?.type === 'google'
+                                ? '#4285f4'
+                                : authMethod?.type === 'facebook'
+                                  ? '#1877f2'
+                                  : authMethod?.type === 'email'
+                                    ? '#ff6b35'
+                                    : '#fff'
+                              : undefined,
+                            fontWeight: isAuth ? 'bold' : 'normal',
+                            fontSize: isAuth ? '16px' : '12px',
+                          }}
+                        >
+                          {isAuth
+                            ? authMethod?.type === 'google'
+                              ? 'G'
+                              : authMethod?.type === 'facebook'
+                                ? 'f'
+                                : authMethod?.type === 'email'
+                                  ? '✉'
+                                  : ''
+                            : adjacencyCount > 0
+                              ? adjacencyCount
+                              : ''}
+                        </div>
+                      );
+                    } else {
+                      // Hidden cell - make it clickable with a form
+                      return (
+                        <form
+                          key={index}
+                          method="GET"
+                          style={{ display: 'inline' }}
+                        >
+                          <input type="hidden" name="reveal" value={index} />
+                          <button
+                            type="submit"
+                            className="msw-cell hidden"
+                            style={{
+                              all: 'unset',
+                              width: '25px',
+                              height: '25px',
+                              background:
+                                'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
+                              border: '2px outset #c0c0c0',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              fontSize: '12px',
+                              fontWeight: 'bold',
+                            }}
+                          ></button>
+                        </form>
+                      );
+                    }
+                  })}
                 </div>
               </div>
 
               <div className="msw-auth-panel">
-                {authPositions.map((auth) => (
-                  <a
-                    key={auth.type}
-                    href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
-                    className={`msw-oauth ${auth.type}`}
-                  >
-                    <div className={`msw-oauth-icon ${auth.type}-icon`}>
-                      {auth.type === 'google'
-                        ? 'G'
-                        : auth.type === 'facebook'
-                          ? 'f'
-                          : auth.type === 'email'
-                            ? '✉'
-                            : ''}
+                {revealedAuthMethods.length === 0 ? (
+                  <div className="msw-instructions">
+                    <h3>How to Play</h3>
+                    <p>Click squares to reveal login methods!</p>
+                    <p>Numbers show how many login methods are nearby.</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="msw-instructions">
+                      <h3>Login Methods Found:</h3>
                     </div>
-                    {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
-                  </a>
-                ))}
+                    {revealedAuthMethods.map((auth) => (
+                      <a
+                        key={auth.type}
+                        href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
+                        className={`msw-oauth ${auth.type}`}
+                      >
+                        <div className={`msw-oauth-icon ${auth.type}-icon`}>
+                          {auth.type === 'google'
+                            ? 'G'
+                            : auth.type === 'facebook'
+                              ? 'f'
+                              : auth.type === 'email'
+                                ? '✉'
+                                : ''}
+                        </div>
+                        {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
+                      </a>
+                    ))}
+                  </>
+                )}
               </div>
             </div>
           </div>
