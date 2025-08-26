@@ -28,6 +28,10 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     return [];
   };
 
+  // For debugging - log the current URL and revealed cells
+  console.log('Current requestUrl:', props.requestUrl);
+  console.log('Revealed cells:', getRevealedCells());
+
   // Fixed auth method positions (we'll make these random later)
   const authMethods = [
     { position: 9, type: 'google' }, // Row 1, Col 1
@@ -117,9 +121,11 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 <div className="msw-counter">
                   {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                 </div>
-                <a href="?" className="msw-reset">
-                  😊
-                </a>
+                <form method="GET" style={{ display: 'inline' }}>
+                  <button type="submit" className="msw-reset">
+                    😊
+                  </button>
+                </form>
                 <div className="msw-counter">000</div>
               </div>
 
@@ -170,28 +176,40 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                       </div>
                     );
                   } else {
-                    // Hidden cell - make it clickable with a link
+                    // Hidden cell - make it clickable with a form
                     return (
-                      <a
+                      <form
                         key={index}
-                        href={createRevealUrl(index)}
-                        className="msw-cell hidden"
-                        style={{
-                          all: 'unset',
-                          width: '32px',
-                          height: '32px',
-                          background:
-                            'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
-                          border: '2px outset #c0c0c0',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          fontSize: '14px',
-                          fontWeight: 'bold',
-                          textDecoration: 'none',
-                        }}
-                      ></a>
+                        method="GET"
+                        style={{ display: 'inline' }}
+                      >
+                        <input
+                          type="hidden"
+                          name="revealed"
+                          value={createRevealUrl(index).replace(
+                            '?revealed=',
+                            ''
+                          )}
+                        />
+                        <button
+                          type="submit"
+                          className="msw-cell hidden"
+                          style={{
+                            all: 'unset',
+                            width: '32px',
+                            height: '32px',
+                            background:
+                              'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
+                            border: '2px outset #c0c0c0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                          }}
+                        ></button>
+                      </form>
                     );
                   }
                 })}
