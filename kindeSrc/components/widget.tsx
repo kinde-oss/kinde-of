@@ -28,10 +28,6 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     return [];
   };
 
-  // For debugging - log the current URL and revealed cells
-  console.log('Current requestUrl:', props.requestUrl);
-  console.log('Revealed cells:', getRevealedCells());
-
   // Fixed auth method positions (we'll make these random later)
   const authMethods = [
     { position: 9, type: 'google' }, // Row 1, Col 1
@@ -186,10 +182,9 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                         <input
                           type="hidden"
                           name="revealed"
-                          value={createRevealUrl(index).replace(
-                            '?revealed=',
-                            ''
-                          )}
+                          value={[...revealedCells, index]
+                            .sort((a, b) => a - b)
+                            .join(',')}
                         />
                         <button
                           type="submit"
