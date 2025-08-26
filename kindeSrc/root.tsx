@@ -41,13 +41,7 @@ export const Root = ({
         <script
           nonce={(request as any).nonce}
           dangerouslySetInnerHTML={{
-            __html: `
-              window.addEventListener('DOMContentLoaded', function() {
-                if (typeof window.getKindeWidget === 'undefined') {
-                  window.getKindeWidget = function(){ return null; };
-                }
-              });
-            `,
+            __html: `window.getKindeWidget = function(){ return null; };`,
           }}
         />
       </head>

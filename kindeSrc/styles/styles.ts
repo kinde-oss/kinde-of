@@ -160,7 +160,7 @@ export const getStyles = (): string => `
     color: #000;
   }
 
-  .msw-game-container {
+  .msw-login-container {
     display: flex;
     gap: 20px;
     align-items: flex-start;
@@ -177,12 +177,68 @@ export const getStyles = (): string => `
 
 
 
-  .msw-auth-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
+  .msw-instructions-panel {
     min-width: 200px;
+    margin-top: 40px; /* Align with window content */
+  }
+
+  .msw-found-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f0f0f0;
+    border: 2px inset #c0c0c0;
+    border-radius: 4px;
+  }
+
+  .msw-oauth-small {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #e0e0e0;
+    border: 2px outset #c0c0c0;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+
+  .msw-oauth-small:hover {
+    background: #d0d0d0;
+    border: 2px inset #c0c0c0;
+  }
+
+  .msw-oauth-icon-small {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .msw-oauth-icon-small.google-icon {
+    background: #4285f4;
+    color: white;
+  }
+
+  .msw-oauth-icon-small.facebook-icon {
+    background: #1877f2;
+    color: white;
+  }
+
+  .msw-oauth-icon-small.email-icon {
+    background: #ff6b35;
+    color: white;
   }
 
   .msw-instructions {

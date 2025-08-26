@@ -112,127 +112,124 @@ export const Widget: React.FC<WidgetProps> = (props) => {
           <div className="msw-content">
             <div className="msw-main-title">Minesweeper Login</div>
 
-            <div className="msw-game-container">
-              <div className="msw-game">
-                <div className="msw-game-header">
-                  <div className="msw-counter">
-                    {String(3 - revealedAuthMethods.length).padStart(3, '0')}
-                  </div>
-                  <a href="?" className="msw-reset">
-                    😊
-                  </a>
-                  <div className="msw-counter">000</div>
+            <div className="msw-game">
+              <div className="msw-game-header">
+                <div className="msw-counter">
+                  {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                 </div>
+                <a href="?" className="msw-reset">
+                  😊
+                </a>
+                <div className="msw-counter">000</div>
+              </div>
 
-                <div className="msw-field">
-                  {Array.from({ length: 64 }, (_, index) => {
-                    const isRevealed = revealedCells.includes(index);
-                    const authMethod = authMethods.find(
-                      (am) => am.position === index
-                    );
-                    const isAuth = !!authMethod;
-                    const adjacencyCount = calculateAdjacency(index);
+              <div className="msw-field">
+                {Array.from({ length: 64 }, (_, index) => {
+                  const isRevealed = revealedCells.includes(index);
+                  const authMethod = authMethods.find(
+                    (am) => am.position === index
+                  );
+                  const isAuth = !!authMethod;
+                  const adjacencyCount = calculateAdjacency(index);
 
-                    if (isRevealed) {
-                      // Revealed cell
-                      return (
-                        <div
-                          key={index}
-                          className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
-                          style={{
-                            color:
-                              !isAuth && adjacencyCount > 0
-                                ? getNumberColor(adjacencyCount)
-                                : 'transparent',
-                            backgroundColor: isAuth
-                              ? authMethod?.type === 'google'
-                                ? '#4285f4'
-                                : authMethod?.type === 'facebook'
-                                  ? '#1877f2'
-                                  : authMethod?.type === 'email'
-                                    ? '#ff6b35'
-                                    : '#fff'
-                              : undefined,
-                            fontWeight: isAuth ? 'bold' : 'normal',
-                            fontSize: isAuth ? '16px' : '12px',
-                          }}
-                        >
-                          {isAuth
+                  if (isRevealed) {
+                    // Revealed cell
+                    return (
+                      <div
+                        key={index}
+                        className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
+                        style={{
+                          color:
+                            !isAuth && adjacencyCount > 0
+                              ? getNumberColor(adjacencyCount)
+                              : 'transparent',
+                          backgroundColor: isAuth
                             ? authMethod?.type === 'google'
-                              ? 'G'
+                              ? '#4285f4'
                               : authMethod?.type === 'facebook'
-                                ? 'f'
+                                ? '#1877f2'
                                 : authMethod?.type === 'email'
-                                  ? '✉'
-                                  : ''
-                            : adjacencyCount > 0
-                              ? adjacencyCount
-                              : ''}
-                        </div>
-                      );
-                    } else {
-                      // Hidden cell - make it clickable with a link
-                      return (
-                        <a
-                          key={index}
-                          href={createRevealUrl(index)}
-                          className="msw-cell hidden"
-                          style={{
-                            all: 'unset',
-                            width: '25px',
-                            height: '25px',
-                            background:
-                              'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
-                            border: '2px outset #c0c0c0',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            textDecoration: 'none',
-                          }}
-                        ></a>
-                      );
-                    }
-                  })}
-                </div>
+                                  ? '#ff6b35'
+                                  : '#fff'
+                            : undefined,
+                          fontWeight: isAuth ? 'bold' : 'normal',
+                          fontSize: isAuth ? '16px' : '12px',
+                        }}
+                      >
+                        {isAuth
+                          ? authMethod?.type === 'google'
+                            ? 'G'
+                            : authMethod?.type === 'facebook'
+                              ? 'f'
+                              : authMethod?.type === 'email'
+                                ? '✉'
+                                : ''
+                          : adjacencyCount > 0
+                            ? adjacencyCount
+                            : ''}
+                      </div>
+                    );
+                  } else {
+                    // Hidden cell - make it clickable with a link
+                    return (
+                      <a
+                        key={index}
+                        href={createRevealUrl(index)}
+                        className="msw-cell hidden"
+                        style={{
+                          all: 'unset',
+                          width: '25px',
+                          height: '25px',
+                          background:
+                            'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
+                          border: '2px outset #c0c0c0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          textDecoration: 'none',
+                        }}
+                      ></a>
+                    );
+                  }
+                })}
               </div>
 
-              <div className="msw-auth-panel">
-                {revealedAuthMethods.length === 0 ? (
-                  <div className="msw-instructions">
-                    <h3>How to Play</h3>
-                    <p>Click squares to reveal login methods!</p>
-                    <p>Numbers show how many login methods are nearby.</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="msw-instructions">
-                      <h3>Login Methods Found:</h3>
-                    </div>
-                    {revealedAuthMethods.map((auth) => (
-                      <a
-                        key={auth.type}
-                        href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
-                        className={`msw-oauth ${auth.type}`}
-                      >
-                        <div className={`msw-oauth-icon ${auth.type}-icon`}>
-                          {auth.type === 'google'
-                            ? 'G'
-                            : auth.type === 'facebook'
-                              ? 'f'
-                              : auth.type === 'email'
-                                ? '✉'
-                                : ''}
-                        </div>
-                        {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
-                      </a>
-                    ))}
-                  </>
-                )}
-              </div>
+              {/* Show auth methods found within the game area */}
+              {revealedAuthMethods.length > 0 && (
+                <div className="msw-found-methods">
+                  {revealedAuthMethods.map((auth) => (
+                    <a
+                      key={auth.type}
+                      href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
+                      className={`msw-oauth-small ${auth.type}`}
+                    >
+                      <div className={`msw-oauth-icon-small ${auth.type}-icon`}>
+                        {auth.type === 'google'
+                          ? 'G'
+                          : auth.type === 'facebook'
+                            ? 'f'
+                            : auth.type === 'email'
+                              ? '✉'
+                              : ''}
+                      </div>
+                      {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
+          </div>
+        </div>
+
+        {/* Instructions panel outside the dialog */}
+        <div className="msw-instructions-panel">
+          <div className="msw-instructions">
+            <h3>How to Play</h3>
+            <p>Click squares to reveal login methods!</p>
+            <p>Numbers show how many login methods are nearby.</p>
           </div>
         </div>
       </div>
