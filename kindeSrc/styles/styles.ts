@@ -156,30 +156,34 @@ export const getStyles = (): string => `
   .msw-cell { 
     width: 25px; 
     height: 25px; 
-    background: linear-gradient(145deg, #d0d0d0, #a0a0a0);
-    border: 1px outset #c0c0c0; 
+    background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+    border: 2px outset #c0c0c0; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 10px; 
+    font-size: 12px; 
     font-weight: 700; 
     cursor: pointer;
-    box-shadow: inset 1px 1px 0 rgba(255,255,255,.6);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,.8);
+    color: transparent;
   }
-  .msw-cell:hover { background: linear-gradient(145deg, #e0e0e0, #b0b0b0); }
+  .msw-cell:hover:not(.revealed) { 
+    background: linear-gradient(145deg, #f0f0f0, #d0d0d0); 
+    border: 2px outset #d0d0d0;
+  }
+  .msw-cell:active:not(.revealed) { 
+    border: 2px inset #c0c0c0; 
+  }
   .msw-cell.revealed { 
-    border: 1px inset #808080; 
-    background: #c0c0c0; 
-    box-shadow: inset 1px 1px 2px rgba(0,0,0,.3);
+    border: 1px solid #808080; 
+    background: #e0e0e0; 
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,.2);
     cursor: default;
+    color: inherit;
   }
   .msw-cell.auth { 
-    background: #000; 
-    color: #fff; 
-    font-size: 8px; 
-    text-align: center; 
-    line-height: 1; 
-    border: 1px inset #808080; 
+    background: #fff !important; 
+    border: 1px solid #808080; 
     padding: 2px;
   }
   .msw-found { color:#fff; font-size:16px; margin-top:20px; text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,.5); }
@@ -208,6 +212,7 @@ export const getStyles = (): string => `
     transition: all .2s; 
     box-shadow: 2px 2px 4px rgba(0,0,0,.3);
     margin-bottom: 12px;
+    cursor: pointer;
   }
   .msw-oauth:hover { 
     background: linear-gradient(180deg, #106EBE 0%, #0078D4 100%); 
@@ -215,19 +220,23 @@ export const getStyles = (): string => `
   }
   .msw-oauth:active { border: 2px inset #0078D4; }
   .msw-oauth-icon { 
-    width: 40px; 
-    height: 40px; 
-    border-radius: 6px; 
+    width: 56px; 
+    height: 56px; 
+    border-radius: 8px; 
     background: #fff; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 20px; 
-    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
   }
-  .msw-oauth.google .msw-oauth-icon { background: #fff; color: #4285f4; }
-  .msw-oauth.facebook .msw-oauth-icon { background: #1877f2; color: #fff; }
-  .msw-oauth.email .msw-oauth-icon { background: #ffa500; color: #fff; }
+  .msw-oauth-icon img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+  .msw-oauth.email .msw-oauth-icon { background: #FF8C00; }
+  .msw-oauth.google .msw-oauth-icon { background: #fff; }
+  .msw-oauth.facebook .msw-oauth-icon { background: #fff; }
 
   .msw-email-form { margin-top: 10px; }
   .msw-fieldset { margin-bottom: 10px; }
