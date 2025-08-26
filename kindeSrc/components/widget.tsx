@@ -117,11 +117,9 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 <div className="msw-counter">
                   {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                 </div>
-                <form method="GET" style={{ display: 'inline' }}>
-                  <button type="submit" className="msw-reset">
-                    😊
-                  </button>
-                </form>
+                <a href="?" className="msw-reset">
+                  😊
+                </a>
                 <div className="msw-counter">000</div>
               </div>
 
@@ -135,7 +133,6 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                   const adjacencyCount = calculateAdjacency(index);
 
                   if (isRevealed) {
-                    // Revealed cell
                     return (
                       <div
                         key={index}
@@ -172,39 +169,28 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                       </div>
                     );
                   } else {
-                    // Hidden cell - make it clickable with a form
+                    // Hidden cell - make it clickable with a link
                     return (
-                      <form
+                      <a
                         key={index}
-                        method="GET"
-                        style={{ display: 'inline' }}
-                      >
-                        <input
-                          type="hidden"
-                          name="revealed"
-                          value={[...revealedCells, index]
-                            .sort((a, b) => a - b)
-                            .join(',')}
-                        />
-                        <button
-                          type="submit"
-                          className="msw-cell hidden"
-                          style={{
-                            all: 'unset',
-                            width: '32px',
-                            height: '32px',
-                            background:
-                              'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
-                            border: '2px outset #c0c0c0',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                          }}
-                        ></button>
-                      </form>
+                        href={createRevealUrl(index)}
+                        className="msw-cell hidden"
+                        style={{
+                          all: 'unset',
+                          width: '32px',
+                          height: '32px',
+                          background:
+                            'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
+                          border: '2px outset #c0c0c0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: 'bold',
+                          textDecoration: 'none',
+                        }}
+                      ></a>
                     );
                   }
                 })}
