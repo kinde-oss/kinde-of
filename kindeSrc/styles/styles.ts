@@ -162,27 +162,23 @@ export const getStyles = (): string => `
 
   .msw-game-container {
     display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .msw-game {
+    display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px;
+    gap: 10px;
   }
 
-  .msw-play-again {
-    margin-top: 20px;
-    padding: 8px 20px;
-    background: #c0c0c0;
-    border: 2px outset #c0c0c0;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-  }
 
-  .msw-play-again:active {
-    border: 2px inset #c0c0c0;
-  }
+
+
 
   .msw-auth-panel {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 15px;
     align-items: center;

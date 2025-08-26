@@ -142,7 +142,9 @@ export const Widget: React.FC<WidgetProps> = (props) => {
               <div className="msw-game">
                 <div className="msw-game-header">
                   <div className="msw-counter">003</div>
-                  <button className="msw-reset">😊</button>
+                  <a href="/api/auth/login" className="msw-reset">
+                    😊
+                  </a>
                   <div className="msw-counter">000</div>
                 </div>
 
@@ -168,52 +170,44 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                             : undefined,
                       }}
                     >
-                      {cell.type === 'auth' ? (
-                        <img
-                          src={`/images/files/${cell.authType}.png`}
-                          alt={cell.authType}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            objectFit: 'contain',
-                          }}
-                        />
-                      ) : cell.count > 0 ? (
-                        cell.count
-                      ) : (
-                        ''
-                      )}
+                      {cell.type === 'auth'
+                        ? cell.authType === 'google'
+                          ? 'G'
+                          : cell.authType === 'facebook'
+                            ? 'f'
+                            : cell.authType === 'email'
+                              ? '✉'
+                              : ''
+                        : cell.count > 0
+                          ? cell.count
+                          : ''}
                     </div>
                   ))}
                 </div>
+              </div>
 
-                <button className="msw-play-again">Play Again</button>
+              <div className="msw-auth-panel">
+                {authPositions.map((auth) => (
+                  <a
+                    key={auth.type}
+                    href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
+                    className={`msw-oauth ${auth.type}`}
+                  >
+                    <div className={`msw-oauth-icon ${auth.type}-icon`}>
+                      {auth.type === 'google'
+                        ? 'G'
+                        : auth.type === 'facebook'
+                          ? 'f'
+                          : auth.type === 'email'
+                            ? '✉'
+                            : ''}
+                    </div>
+                    {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
+                  </a>
+                ))}
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="msw-auth-panel" style={{ display: 'flex' }}>
-          {authPositions.map((auth) => (
-            <a
-              key={auth.type}
-              href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
-              className={`msw-oauth ${auth.type}`}
-            >
-              <div className={`msw-oauth-icon ${auth.type}-icon`}>
-                <img
-                  src={`/images/files/${auth.type}.png`}
-                  alt={auth.type}
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    objectFit: 'contain',
-                  }}
-                />
-              </div>
-              {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
-            </a>
-          ))}
         </div>
       </div>
     </main>
