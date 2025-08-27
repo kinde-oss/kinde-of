@@ -159,6 +159,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                     return (
                       <div
                         key={index}
+                        data-cell-index={index}
                         className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
                         style={{
                           color:

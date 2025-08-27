@@ -173,7 +173,6 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         // Proper minesweeper cascade logic
         function getCascadeReveals(startCell, authMethods, currentRevealed = []) {
           const toReveal = new Set(currentRevealed);
-          const queue = [startCell];
           const processed = new Set();
           
           // If clicking on an auth method (mine), just reveal that cell
@@ -183,7 +182,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             return Array.from(toReveal);
           }
           
-          // Start with the clicked cell
+          // Always reveal the clicked cell first
           toReveal.add(startCell);
           
           // Check if the starting cell is empty (0 adjacent mines)
@@ -195,44 +194,42 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           }
           
           // If starting cell is empty (0), do flood fill
-          queue.push(startCell);
+          const queue = [startCell];
           processed.add(startCell);
           
           while (queue.length > 0) {
             const cell = queue.shift();
-            const adjacencyCount = calculateAdjacency(cell, authMethods);
+            const row = Math.floor(cell / 8);
+            const col = cell % 8;
             
-            // Only continue cascade from empty cells (0 adjacent mines)
-            if (adjacencyCount === 0) {
-              const row = Math.floor(cell / 8);
-              const col = cell % 8;
-              
-              // Check all 8 neighbors
-              for (let r = -1; r <= 1; r++) {
-                for (let c = -1; c <= 1; c++) {
-                  if (r === 0 && c === 0) continue;
+            // Check all 8 neighbors
+            for (let r = -1; r <= 1; r++) {
+              for (let c = -1; c <= 1; c++) {
+                if (r === 0 && c === 0) continue;
+                
+                const newRow = row + r;
+                const newCol = col + c;
+                
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                  const neighborCell = newRow * 8 + newCol;
                   
-                  const newRow = row + r;
-                  const newCol = col + c;
+                  // Skip if already processed
+                  if (processed.has(neighborCell)) continue;
                   
-                  if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                    const neighborCell = newRow * 8 + newCol;
-                    
-                    // Skip if already processed or is an auth method
-                    if (processed.has(neighborCell)) continue;
-                    
-                    const isNeighborAuth = authMethods.some(am => am.position === neighborCell);
-                    if (isNeighborAuth) continue;
-                    
-                    // Always reveal the neighbor
-                    toReveal.add(neighborCell);
-                    processed.add(neighborCell);
-                    
-                    // Only add to queue if neighbor is also empty (for further cascading)
-                    const neighborAdjacency = calculateAdjacency(neighborCell, authMethods);
-                    if (neighborAdjacency === 0) {
-                      queue.push(neighborCell);
-                    }
+                  // Skip if it's an auth method
+                  const isNeighborAuth = authMethods.some(am => am.position === neighborCell);
+                  if (isNeighborAuth) continue;
+                  
+                  // Mark as processed and reveal
+                  processed.add(neighborCell);
+                  toReveal.add(neighborCell);
+                  
+                  // Check neighbor's adjacency count
+                  const neighborAdjacency = calculateAdjacency(neighborCell, authMethods);
+                  
+                  // Only add to queue if neighbor is also empty (for further cascading)
+                  if (neighborAdjacency === 0) {
+                    queue.push(neighborCell);
                   }
                 }
               }
