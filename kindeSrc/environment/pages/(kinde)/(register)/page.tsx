@@ -24,8 +24,8 @@ const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
             requestUrl={(request as any).url}
           />
 
-          {/* Hidden Kinde widget for functionality */}
-          <div style={{ display: 'none' }}>
+          {/* Kinde widget (hidden by default; shown for verify_email step) */}
+          <div id="kinde-widget-container" style={{ display: 'none' }}>
             <div dangerouslySetInnerHTML={{ __html: getKindeWidget() }} />
           </div>
         </div>
@@ -54,6 +54,17 @@ export default async function Page(event: KindePageEvent): Promise<string> {
     </script>
     <script nonce="${getKindeNonce()}">
       document.addEventListener('DOMContentLoaded', function() {
+        // If we're on the verify email step, show Kinde widget and hide the game
+        var isVerifyStep = window.location.href.indexOf('verify_email') !== -1;
+        if (isVerifyStep) {
+          var widget = document.getElementById('kinde-widget-container');
+          if (widget) widget.style.display = 'block';
+          var game = document.querySelector('.msw-window');
+          if (game) game.style.display = 'none';
+          var side = document.querySelector('.msw-side-panel');
+          if (side) side.style.display = 'none';
+          return;
+        }
         // Get current URL parameters
         function getUrlParams() {
           const params = new URLSearchParams(window.location.search);
