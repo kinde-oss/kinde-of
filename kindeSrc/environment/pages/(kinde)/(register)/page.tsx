@@ -308,6 +308,80 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           }
         }
         
+        // Helpers to build icon src and auth href
+        function buildIconSrc(type) {
+          var base = window.ICON_BASE || '';
+          if (type === 'google') return base + '/images/files/google.png';
+          if (type === 'facebook') return base + '/images/files/facebook.png';
+          if (type === 'email') return base + '/images/files/email.png';
+          return '';
+        }
+
+        function buildAuthHref(connectionId) {
+          return (window.CUSTOM_DOMAIN || '') + '/api/auth/login?connection_id=' + connectionId;
+        }
+
+        // Render right-side auth panel with buttons and email input
+        function renderSidePanel() {
+          var mswGame = document.querySelector('.msw-game');
+          if (!mswGame || !window.KINDE_CONNECTIONS) return;
+
+          var container = mswGame.parentElement;
+          if (!container) return;
+          container.style.display = 'flex';
+          container.style.alignItems = 'flex-start';
+          container.style.gap = '24px';
+
+          var side = document.querySelector('.msw-side-panel');
+          if (!side) {
+            side = document.createElement('div');
+            side.className = 'msw-side-panel';
+            side.style.flex = '0 0 280px';
+            side.style.background = 'rgba(255,255,255,0.12)';
+            side.style.borderRadius = '8px';
+            side.style.padding = '16px';
+            side.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
+            container.appendChild(side);
+          }
+
+          var html = '';
+          var ordered = [];
+          // Put email first
+          window.KINDE_CONNECTIONS.forEach(function (c) { if (c.strategy === 'email') ordered.push(c); });
+          window.KINDE_CONNECTIONS.forEach(function (c) { if (c.strategy !== 'email') ordered.push(c); });
+
+          ordered.forEach(function (conn) {
+            if (conn.strategy === 'email') {
+              html += '\n<div class="msw-auth-row" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
+                '<img src="' + buildIconSrc('email') + '" alt="Email" style="width:20px;height:20px;object-fit:contain" />' +
+                '<input id="msw-email-input" type="email" placeholder="you@example.com" style="flex:1;padding:8px 10px;border:1px solid #ccc;border-radius:6px" />' +
+                '<button id="msw-email-btn" style="padding:8px 12px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer">Email</button>' +
+              '</div>';
+            } else {
+              var label = conn.strategy.charAt(0).toUpperCase() + conn.strategy.slice(1);
+              html += '\n<a href="' + buildAuthHref(conn.id) + '" class="msw-auth-row" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;text-decoration:none">' +
+                '<img src="' + buildIconSrc(conn.strategy) + '" alt="' + label + '" style="width:20px;height:20px;object-fit:contain" />' +
+                '<div style="flex:1;padding:10px 12px;border:1px solid rgba(255,255,255,0.3);border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;font-family:Tahoma, Arial, sans-serif">Sign in with ' + label + '</div>' +
+              '</a>';
+            }
+          });
+
+          side.innerHTML = html;
+
+          var emailBtn = document.getElementById('msw-email-btn');
+          var emailInput = document.getElementById('msw-email-input');
+          var emailConn = ordered.find(function(c){return c.strategy==='email';});
+          if (emailBtn && emailInput && emailConn) {
+            emailBtn.addEventListener('click', function (e) {
+              e.preventDefault();
+              var v = (emailInput.value || '').trim();
+              if (!v) return;
+              var href = buildAuthHref(emailConn.id) + '&login_hint=' + encodeURIComponent(v);
+              window.location.href = href;
+            });
+          }
+        }
+
         // Initial display update
         updateDisplay();
         
@@ -328,6 +402,9 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           });
         });
         
+        // Render side panel
+        renderSidePanel();
+
         // Handle reset button
         const resetBtn = document.querySelector('.msw-reset');
         if (resetBtn) {
