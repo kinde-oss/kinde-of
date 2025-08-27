@@ -238,7 +238,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         
         // Global click counter
         let clickCount = 0;
-
+        
         // Update display based on current state
         function updateDisplay() {
           const { revealed, seed } = getUrlParams();
@@ -324,7 +324,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             side.className = 'msw-side-panel';
             side.style.position = 'fixed';
             side.style.top = '50%';
-            side.style.left = 'calc(50% + 280px)';
+            side.style.left = 'calc(50% + 240px)';
             side.style.transform = 'translateY(-50%)';
             side.style.width = '320px';
             side.style.background = 'linear-gradient(180deg, #d4d0c8 0%, #c0c0c0 100%)';
@@ -462,7 +462,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             });
           }
         }
-
+        
         // Initial display update
         updateDisplay();
         
@@ -493,7 +493,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           const revealedAuthMethods = authMethods.filter(am => revealed.includes(am.position));
           renderSidePanel(revealedAuthMethods);
         })();
-
+        
         // Handle reset button
         const resetBtn = document.querySelector('.msw-reset');
         if (resetBtn) {
