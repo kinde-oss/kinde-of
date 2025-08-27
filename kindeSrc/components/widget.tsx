@@ -36,7 +36,9 @@ export const Widget: React.FC<WidgetProps> = (props) => {
       }
     }
 
-    const seed = seedParam ? parseInt(seedParam) : 12345; // Use a fixed default seed for SSR
+    const seed = seedParam
+      ? parseInt(seedParam)
+      : Math.floor(Math.random() * 100000); // Use random seed if not specified
 
     // Simple seeded random function
     const seededRandom = (seed: number) => {

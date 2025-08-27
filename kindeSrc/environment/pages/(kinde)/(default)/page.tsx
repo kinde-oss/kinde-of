@@ -64,7 +64,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           const params = new URLSearchParams(window.location.search);
           return {
             revealed: params.get('revealed') ? params.get('revealed').split(',').map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 0 && n < 64) : [],
-            seed: params.get('seed') ? parseInt(params.get('seed')) : 12345
+            seed: params.get('seed') ? parseInt(params.get('seed')) : Math.floor(Math.random() * 100000)
           };
         }
         
