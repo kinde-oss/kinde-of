@@ -97,7 +97,8 @@ export const getStyles = (): string => `
     box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
     width: 460px;
     max-width: 90vw;
-    transform: translateX(-410px);
+    /* Center as a pair with the side panel; left piece of a 736px group (460 + 16 gap + 260 visible width) */
+    transform: translateX(-368px);
   }
 
   .msw-title-bar {
@@ -534,7 +535,10 @@ export const getStyles = (): string => `
     }
 
     .login-form {
-      background: rgba(0, 0, 0, 0.2);
+      /* Remove blue rounded rectangle backdrop on Kinde pages */
+      background: transparent !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
     }
   }
 `;
