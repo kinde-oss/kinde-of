@@ -317,6 +317,8 @@ export const getStyles = (): string => `
     display: flex; 
     align-items: center; 
     justify-content: center; 
+    text-decoration: none;
+    color: inherit;
   }
   .msw-reset:active { border: 2px inset #c0c0c0; }
   
