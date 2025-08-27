@@ -123,137 +123,126 @@ export const Widget: React.FC<WidgetProps> = (props) => {
 
   return (
     <main className="login-form">
-      <div className="msw-login-container">
-        <div className="msw-window">
-          <div className="msw-title-bar">
-            <div className="msw-window-title">Login</div>
-            <div className="msw-window-controls">
-              <div className="msw-window-btn">−</div>
-              <div className="msw-window-btn">□</div>
-              <div className="msw-window-btn">✕</div>
-            </div>
-          </div>
-
-          <div className="msw-content">
-            <div className="msw-main-title">Kindesweeper Login</div>
-
-            <div className="msw-game">
-              <div className="msw-game-header">
-                <div className="msw-counter" id="msw-bomb-counter">
-                  {String(3 - revealedAuthMethods.length).padStart(2, '0')}
-                </div>
-                <a href="?seed=0" className="msw-reset">
-                  😊
-                </a>
-                <div className="msw-counter" id="msw-click-counter">
-                  00
-                </div>
-              </div>
-
-              <div className="msw-field">
-                {Array.from({ length: 64 }, (_, index) => {
-                  const isRevealed = revealedCells.includes(index);
-                  const authMethod = authMethods.find(
-                    (am) => am.position === index
-                  );
-                  const isAuth = !!authMethod;
-                  const adjacencyCount = calculateAdjacency(index);
-
-                  if (isRevealed) {
-                    return (
-                      <div
-                        key={index}
-                        data-cell-index={index}
-                        className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
-                        style={{
-                          color:
-                            !isAuth && adjacencyCount > 0
-                              ? getNumberColor(adjacencyCount)
-                              : 'transparent',
-                          backgroundColor: isAuth
-                            ? authMethod?.type === 'google'
-                              ? '#4285f4'
-                              : authMethod?.type === 'facebook'
-                                ? '#1877f2'
-                                : authMethod?.type === 'email'
-                                  ? '#ff6b35'
-                                  : '#fff'
-                            : undefined,
-                          fontWeight: isAuth ? 'bold' : 'normal',
-                          fontSize: isAuth ? '16px' : '12px',
-                        }}
-                      >
-                        {isAuth
-                          ? authMethod?.type === 'google'
-                            ? 'G'
-                            : authMethod?.type === 'facebook'
-                              ? 'f'
-                              : authMethod?.type === 'email'
-                                ? '✉'
-                                : ''
-                          : adjacencyCount > 0
-                            ? adjacencyCount
-                            : ''}
-                      </div>
-                    );
-                  } else {
-                    // Hidden cell - make it clickable with JavaScript
-                    return (
-                      <div
-                        key={index}
-                        data-cell-index={index}
-                        className="msw-cell hidden"
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          background:
-                            'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
-                          border: '2px outset #c0c0c0',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          fontSize: '14px',
-                          fontWeight: 'bold',
-                        }}
-                      ></div>
-                    );
-                  }
-                })}
-              </div>
-
-              {/* Show auth methods found within the game area */}
-              {revealedAuthMethods.length > 0 && (
-                <div className="msw-found-methods">
-                  {revealedAuthMethods.map((auth) => (
-                    <a
-                      key={auth.type}
-                      href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
-                      className={`msw-oauth-small ${auth.type}`}
-                    >
-                      <div className={`msw-oauth-icon-small ${auth.type}-icon`}>
-                        {auth.type === 'google'
-                          ? 'G'
-                          : auth.type === 'facebook'
-                            ? 'f'
-                            : auth.type === 'email'
-                              ? '✉'
-                              : ''}
-                      </div>
-                      {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+      <div className="msw-window">
+        <div className="msw-title-bar">
+          <div className="msw-window-title">Login</div>
+          <div className="msw-window-controls">
+            <div className="msw-window-btn">−</div>
+            <div className="msw-window-btn">□</div>
+            <div className="msw-window-btn">✕</div>
           </div>
         </div>
 
-        {/* Instructions panel outside the dialog */}
-        <div className="msw-instructions-panel">
-          <div className="msw-instructions">
-            <h3>How to Play</h3>
-            <p>Click squares to reveal login methods!</p>
+        <div className="msw-content">
+          <div className="msw-main-title">Kindesweeper Login</div>
+
+          <div className="msw-game">
+            <div className="msw-game-header">
+              <div className="msw-counter" id="msw-bomb-counter">
+                {String(3 - revealedAuthMethods.length).padStart(2, '0')}
+              </div>
+              <a href="?seed=0" className="msw-reset">
+                😊
+              </a>
+              <div className="msw-counter" id="msw-click-counter">
+                00
+              </div>
+            </div>
+
+            <div className="msw-field">
+              {Array.from({ length: 64 }, (_, index) => {
+                const isRevealed = revealedCells.includes(index);
+                const authMethod = authMethods.find(
+                  (am) => am.position === index
+                );
+                const isAuth = !!authMethod;
+                const adjacencyCount = calculateAdjacency(index);
+
+                if (isRevealed) {
+                  return (
+                    <div
+                      key={index}
+                      data-cell-index={index}
+                      className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
+                      style={{
+                        color:
+                          !isAuth && adjacencyCount > 0
+                            ? getNumberColor(adjacencyCount)
+                            : 'transparent',
+                        backgroundColor: isAuth
+                          ? authMethod?.type === 'google'
+                            ? '#4285f4'
+                            : authMethod?.type === 'facebook'
+                              ? '#1877f2'
+                              : authMethod?.type === 'email'
+                                ? '#ff6b35'
+                                : '#fff'
+                          : undefined,
+                        fontWeight: isAuth ? 'bold' : 'normal',
+                        fontSize: isAuth ? '16px' : '12px',
+                      }}
+                    >
+                      {isAuth
+                        ? authMethod?.type === 'google'
+                          ? 'G'
+                          : authMethod?.type === 'facebook'
+                            ? 'f'
+                            : authMethod?.type === 'email'
+                              ? '✉'
+                              : ''
+                        : adjacencyCount > 0
+                          ? adjacencyCount
+                          : ''}
+                    </div>
+                  );
+                } else {
+                  // Hidden cell - make it clickable with JavaScript
+                  return (
+                    <div
+                      key={index}
+                      data-cell-index={index}
+                      className="msw-cell hidden"
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        background: 'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
+                        border: '2px outset #c0c0c0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                      }}
+                    ></div>
+                  );
+                }
+              })}
+            </div>
+
+            {/* Show auth methods found within the game area */}
+            {revealedAuthMethods.length > 0 && (
+              <div className="msw-found-methods">
+                {revealedAuthMethods.map((auth) => (
+                  <a
+                    key={auth.type}
+                    href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
+                    className={`msw-oauth-small ${auth.type}`}
+                  >
+                    <div className={`msw-oauth-icon-small ${auth.type}-icon`}>
+                      {auth.type === 'google'
+                        ? 'G'
+                        : auth.type === 'facebook'
+                          ? 'f'
+                          : auth.type === 'email'
+                            ? '✉'
+                            : ''}
+                    </div>
+                    {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -322,11 +322,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           if (!side) {
             side = document.createElement('div');
             side.className = 'msw-side-panel';
-            side.style.position = 'fixed';
-            side.style.top = '50%';
-            side.style.left = '50%';
-            // Pair center: dialog shifted left 368px, side shifted right 352px for ~16px gap
-            side.style.transform = 'translate(352px, -50%)';
+            side.style.position = 'absolute';
             side.style.width = '320px';
             side.style.background = 'linear-gradient(180deg, #d4d0c8 0%, #c0c0c0 100%)';
             side.style.border = '2px outset #c0c0c0';
@@ -361,6 +357,15 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           side.appendChild(header);
           
           if (!revealedAuthMethods || revealedAuthMethods.length === 0) return;
+
+          // Position the side panel relative to the dialog so the gap is consistent
+          var dialog = document.querySelector('.msw-window');
+          if (dialog) {
+            var rect = dialog.getBoundingClientRect();
+            var desiredGap = 24; // pixels
+            side.style.top = (rect.top + window.scrollY + 20) + 'px';
+            side.style.left = (rect.right + window.scrollX + desiredGap) + 'px';
+          }
 
           // Order connections by the order they were uncovered
           var ordered = revealedAuthMethods.map(function (am) {

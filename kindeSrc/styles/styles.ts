@@ -90,15 +90,14 @@ export const getStyles = (): string => `
 
   /* minesweeper styles */
 
-
   .msw-window {
     background: #c0c0c0;
     border: 2px outset #c0c0c0;
     box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
     width: 460px;
     max-width: 90vw;
-    /* Center as a pair with the side panel; left piece of a 736px group (460 + 16 gap + 260 visible width) */
-    transform: translateX(-368px);
+    /* Natural centering; side panel will position relative to this element */
+    transform: none;
   }
 
   .msw-title-bar {
@@ -164,13 +163,7 @@ export const getStyles = (): string => `
     gap: 10px;
   }
 
-
-
-
-
-  .msw-instructions-panel {
-    display: none; /* Hide the instructions panel to prevent white box */
-  }
+  .msw-instructions-panel { display: none; }
 
   .msw-found-methods {
     display: flex;
