@@ -89,20 +89,7 @@ export const getStyles = (): string => `
   }
 
   /* minesweeper styles */
-  .msw-login-container { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 40px; 
-    min-height: 100vh; 
-    background: linear-gradient(135deg, #3a6ea5 0%, #004e98 50%, #3a6ea5 100%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    gap: 60px;
-  }
+
 
   .msw-window {
     background: #c0c0c0;
@@ -167,20 +154,7 @@ export const getStyles = (): string => `
     color: #000;
   }
 
-  .msw-login-container { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 40px; 
-    min-height: 100vh; 
-    background: linear-gradient(135deg, #3a6ea5 0%, #004e98 50%, #3a6ea5 100%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    gap: 60px;
-  }
+
 
   .msw-game {
     display: flex;
