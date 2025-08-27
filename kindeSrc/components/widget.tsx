@@ -135,7 +135,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
           </div>
 
           <div className="msw-content">
-            <div className="msw-main-title">Minesweeper Login</div>
+            <div className="msw-main-title">Kindesweeper Login</div>
 
             <div className="msw-game">
               <div className="msw-game-header">
