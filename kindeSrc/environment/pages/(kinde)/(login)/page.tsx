@@ -318,14 +318,13 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             side.style.right = '24px';
             side.style.transform = 'translateY(-50%)';
             side.style.width = '320px';
-            side.style.background = 'rgba(255,255,255,0.15)';
-            side.style.borderRadius = '12px';
-            side.style.padding = '20px';
-            side.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-            side.style.backdropFilter = 'blur(8px)';
-            side.style.border = '1px solid rgba(255,255,255,0.2)';
+            side.style.background = 'linear-gradient(180deg, #d4d0c8 0%, #c0c0c0 100%)';
+            side.style.border = '2px outset #c0c0c0';
+            side.style.padding = '16px';
+            side.style.boxShadow = '4px 4px 8px rgba(0,0,0,0.3)';
             side.style.zIndex = '1000';
-            side.style.fontFamily = 'Tahoma, Arial, sans-serif';
+            side.style.fontFamily = 'MS Sans Serif, Tahoma, Arial, sans-serif';
+            side.style.fontSize = '11px';
             document.body.appendChild(side);
           }
 
@@ -334,11 +333,16 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           
           // Add header with disclaimer
           var header = document.createElement('div');
-          header.style.color = '#fff';
-          header.style.fontSize = '14px';
-          header.style.marginBottom = '16px';
+          header.style.color = '#000';
+          header.style.fontSize = '11px';
+          header.style.marginBottom = '12px';
           header.style.textAlign = 'center';
-          header.style.opacity = '0.9';
+          header.style.fontWeight = 'bold';
+          header.style.background = 'linear-gradient(90deg, #0054e3 0%, #0099ff 100%)';
+          header.style.color = '#fff';
+          header.style.padding = '4px 8px';
+          header.style.border = '1px inset #c0c0c0';
+          header.style.borderRadius = '0';
           if (!revealedAuthMethods || revealedAuthMethods.length === 0) {
             header.textContent = '🕵️ Login methods will magically appear here as you uncover them in the minefield!';
           } else {
@@ -359,8 +363,11 @@ export default async function Page(event: KindePageEvent): Promise<string> {
               row.className = 'msw-auth-row';
               row.style.display = 'flex';
               row.style.alignItems = 'center';
-              row.style.gap = '8px';
-              row.style.marginBottom = '12px';
+              row.style.gap = '6px';
+              row.style.marginBottom = '8px';
+              row.style.background = '#f0f0f0';
+              row.style.border = '1px inset #c0c0c0';
+              row.style.padding = '6px';
 
               var img = document.createElement('img');
               img.src = buildIconSrc('email');
@@ -374,21 +381,25 @@ export default async function Page(event: KindePageEvent): Promise<string> {
               input.type = 'email';
               input.placeholder = 'you@example.com';
               input.style.flex = '1';
-              input.style.padding = '8px 10px';
-              input.style.border = '1px solid #ccc';
-              input.style.borderRadius = '6px';
+              input.style.padding = '3px 4px';
+              input.style.border = '1px inset #c0c0c0';
+              input.style.borderRadius = '0';
+              input.style.background = '#fff';
+              input.style.fontSize = '11px';
+              input.style.fontFamily = 'MS Sans Serif, Tahoma, Arial, sans-serif';
 
               var btn = document.createElement('button');
               btn.id = 'msw-email-btn';
               btn.textContent = 'Login';
-              btn.style.padding = '10px 16px';
-              btn.style.border = 'none';
-              btn.style.borderRadius = '8px';
-              btn.style.background = '#3b82f6';
-              btn.style.color = '#fff';
+              btn.style.padding = '4px 12px';
+              btn.style.border = '1px outset #c0c0c0';
+              btn.style.borderRadius = '0';
+              btn.style.background = 'linear-gradient(180deg, #e0e0e0 0%, #c0c0c0 100%)';
+              btn.style.color = '#000';
               btn.style.cursor = 'pointer';
-              btn.style.fontSize = '14px';
-              btn.style.fontWeight = '500';
+              btn.style.fontSize = '11px';
+              btn.style.fontFamily = 'MS Sans Serif, Tahoma, Arial, sans-serif';
+              btn.style.fontWeight = 'normal';
 
               row.appendChild(img);
               row.appendChild(input);
@@ -401,9 +412,12 @@ export default async function Page(event: KindePageEvent): Promise<string> {
               a.className = 'msw-auth-row';
               a.style.display = 'flex';
               a.style.alignItems = 'center';
-              a.style.gap = '12px';
-              a.style.marginBottom = '12px';
+              a.style.gap = '8px';
+              a.style.marginBottom = '8px';
               a.style.textDecoration = 'none';
+              a.style.background = 'linear-gradient(180deg, #e0e0e0 0%, #c0c0c0 100%)';
+              a.style.border = '1px outset #c0c0c0';
+              a.style.padding = '6px 8px';
 
               var img2 = document.createElement('img');
               img2.src = buildIconSrc(conn.strategy);
@@ -414,12 +428,10 @@ export default async function Page(event: KindePageEvent): Promise<string> {
 
               var div = document.createElement('div');
               div.style.flex = '1';
-              div.style.padding = '10px 12px';
-              div.style.border = '1px solid rgba(255,255,255,0.3)';
-              div.style.borderRadius = '8px';
-              div.style.background = 'rgba(255,255,255,0.08)';
-              div.style.color = '#fff';
-              div.style.fontFamily = 'Tahoma, Arial, sans-serif';
+              div.style.padding = '4px 6px';
+              div.style.color = '#000';
+              div.style.fontFamily = 'MS Sans Serif, Tahoma, Arial, sans-serif';
+              div.style.fontSize = '11px';
               div.textContent = 'Sign in with ' + label;
 
               a.appendChild(img2);
