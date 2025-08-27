@@ -1,7 +1,6 @@
 // CSS Variables configuration
 const kindeVariables = {
-  baseFontFamily:
-    'Instrument Sans, -apple-system, system-ui, BlinkMacSystemFont, Helvetica, Arial, Segoe UI, Roboto, sans-serif',
+  baseFontFamily: 'Tahoma, Arial, sans-serif',
   controlSelectTextBorderRadius: '1rem',
   buttonPrimaryBackgroundColor: '#C1AFEF',
   buttonPrimaryColor: '#f5f5f5',
@@ -28,6 +27,11 @@ export const getStyles = (): string => `
     --kinde-control-select-text-border-color: #636363;
     --kinde-button-primary-border-width: 0;
     --kinde-designer-base-link-color: #fff;
+  }
+
+  /* Global font override */
+  body, html, * {
+    font-family: Tahoma, Arial, sans-serif !important;
   }
 
   [data-kinde-control-label] {
@@ -298,7 +302,7 @@ export const getStyles = (): string => `
   .msw-counter { 
     background: #000; 
     color: #ff0000; 
-    font-family: 'Courier New', monospace; 
+    font-family: Tahoma, 'Courier New', monospace; 
     font-size: 24px; 
     font-weight: 700; 
     padding: 6px 10px; 
