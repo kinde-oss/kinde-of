@@ -12,6 +12,7 @@
   "dependencies": {
     "@kinde-oss/kinde-auth-nextjs": "^2.5.0",
     "@kinde/infrastructure": "^0.7.2",
+    "@kinde/management-api-js": "^0.14.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.3",
     "@types/node": "20.11.5",

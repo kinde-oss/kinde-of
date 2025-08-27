@@ -12,6 +12,7 @@ import {
 import React from 'react';
 import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
+import { Connections, init } from '@kinde/management-api-js';
 
 const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
   return (
@@ -41,15 +42,31 @@ export default async function Page(event: KindePageEvent): Promise<string> {
   // Get the Kinde login URL for use in JavaScript
   const kindeLoginUrl = getKindeLoginUrl();
 
-  // For now, use hardcoded connections - TODO: find proper getConnections function
-  // Debug: log context to see if connections are available
-  console.log('Context keys:', Object.keys(event.context));
+  // Fetch connections dynamically using Kinde Management API
+  let connections: Array<{ id: string; strategy: string }> = [];
 
-  let connections: Array<{ id: string; strategy: string }> = [
-    { id: 'conn_019872d36897cefc0235b3e946560f7f', strategy: 'google' },
-    { id: 'conn_0198a61044542d21e9fa9057f5d14efc', strategy: 'facebook' },
-    { id: 'conn_01986aa4b37660f9c12738960ed5b36a', strategy: 'email' },
-  ];
+  try {
+    // Initialize Management API client
+    init();
+
+    // Fetch all connections
+    const connectionsResponse = await Connections.getConnections();
+
+    if (connectionsResponse && connectionsResponse.connections) {
+      connections = connectionsResponse.connections.map((conn: any) => ({
+        id: conn.id,
+        strategy: conn.strategy,
+      }));
+    }
+  } catch (error) {
+    console.error('Failed to fetch connections from Management API:', error);
+    // Fallback to hardcoded connections if API fails
+    connections = [
+      { id: 'conn_019872d36897cefc0235b3e946560f7f', strategy: 'google' },
+      { id: 'conn_0198a61044542d21e9fa9057f5d14efc', strategy: 'facebook' },
+      { id: 'conn_01986aa4b37660f9c12738960ed5b36a', strategy: 'email' },
+    ];
+  }
 
   // Add the minesweeper JavaScript after rendering
   const script = `
