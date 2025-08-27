@@ -274,7 +274,6 @@ export default function AnnoyingModal() {
           background: #228b22;
         }
 
-        /* Remove focus outlines except for buttons and links */
         a,
         button {
           outline-offset: 2px;
@@ -284,7 +283,6 @@ export default function AnnoyingModal() {
           outline: 2px solid #0066cc;
           outline-offset: 2px;
         }
-        /* Prevent focus outlines on other elements */
         *:not(a):not(button):focus {
           outline: none;
         }
