@@ -11,7 +11,6 @@ import {
 import React from 'react';
 import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
-import { Applications, init } from '@kinde/management-api-js';
 
 const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
   return (
@@ -36,37 +35,12 @@ const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
 };
 
 export default async function Page(event: KindePageEvent): Promise<string> {
-  // No longer need manual login URL since we're using LoginLink
-
-  // Fetch connections dynamically using Kinde Management API
-  let connections: Array<{ id: string; strategy: string }> = [];
-
-  try {
-    // Initialize Management API client
-    init();
-
-    const applicationId = 'e194c444dc3f47d3a608895f502ca7a0';
-
-    // Fetch connections for the specific application
-    const connectionsResponse = await Applications.getApplicationConnections({
-      applicationId,
-    });
-
-    if (connectionsResponse && connectionsResponse.connections) {
-      connections = connectionsResponse.connections.map((conn: any) => ({
-        id: conn.id,
-        strategy: conn.strategy,
-      }));
-    }
-  } catch (error) {
-    console.error('Failed to fetch connections from Management API:', error);
-    // Fallback to hardcoded connections if API fails
-    connections = [
-      { id: 'conn_019872d36897cefc0235b3e946560f7f', strategy: 'google' },
-      { id: 'conn_0198a61044542d21e9fa9057f5d14efc', strategy: 'facebook' },
-      { id: 'conn_01986aa4b37660f9c12738960ed5b36a', strategy: 'email' },
-    ];
-  }
+  // Use your connection IDs for the application
+  const connections: Array<{ id: string; strategy: string }> = [
+    { id: 'conn_019872d36897cefc0235b3e946560f7f', strategy: 'google' },
+    { id: 'conn_0198a61044542d21e9fa9057f5d14efc', strategy: 'facebook' },
+    { id: 'conn_01986aa4b37660f9c12738960ed5b36a', strategy: 'email' },
+  ];
 
   const page = await RegisterPage(event);
   const pageHtml = renderToString(page);
