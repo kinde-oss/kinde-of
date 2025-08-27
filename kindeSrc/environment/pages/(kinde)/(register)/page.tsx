@@ -296,9 +296,18 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             // Create auth method links using proper Kinde API auth pattern
             authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => {
               var isEmail = auth.type === 'email';
-              var href = isEmail
-                ? (window.CUSTOM_DOMAIN || '') + '/email?connection_id=' + auth.connectionId
-                : (window.CUSTOM_DOMAIN || '') + '/api/auth/login?connection_id=' + auth.connectionId;
+              var href;
+              if (isEmail) {
+                try {
+                  var eurl = new URL('/email', window.CUSTOM_DOMAIN || '');
+                  eurl.searchParams.set('connection_id', auth.connectionId);
+                  href = eurl.toString();
+                } catch (e) {
+                  href = (window.CUSTOM_DOMAIN || '') + '/email?connection_id=' + encodeURIComponent(auth.connectionId);
+                }
+              } else {
+                href = buildAuthHref(auth.connectionId);
+              }
               return '<a href="' + href + '" class="msw-oauth-small ' + auth.type + '" aria-label="' + auth.type + '" title="' + auth.type + '">' +
                 getAuthIcon(auth.type) +
                 '</a>'
@@ -318,7 +327,14 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         }
 
         function buildAuthHref(connectionId) {
-          return (window.CUSTOM_DOMAIN || '') + '/api/auth/login?connection_id=' + connectionId;
+          try {
+            var base = window.CUSTOM_DOMAIN || '';
+            var url = new URL('/api/auth/login', base);
+            url.searchParams.set('connection_id', connectionId);
+            return url.toString();
+          } catch (e) {
+            return (window.CUSTOM_DOMAIN || '') + '/api/auth/login?connection_id=' + encodeURIComponent(connectionId);
+          }
         }
 
         // Render right-side auth panel with buttons and email input
