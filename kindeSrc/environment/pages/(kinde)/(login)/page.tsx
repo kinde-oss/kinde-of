@@ -325,7 +325,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             side.style.position = 'fixed';
             side.style.top = '50%';
             side.style.left = '50%';
-            side.style.transform = 'translate(240px, -50%)';
+            side.style.transform = 'translate(90px, -50%)';
             side.style.width = '320px';
             side.style.background = 'linear-gradient(180deg, #d4d0c8 0%, #c0c0c0 100%)';
             side.style.border = '2px outset #c0c0c0';

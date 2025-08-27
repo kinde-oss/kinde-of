@@ -97,6 +97,7 @@ export const getStyles = (): string => `
     box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
     width: 460px;
     max-width: 90vw;
+    transform: translateX(-410px);
   }
 
   .msw-title-bar {
