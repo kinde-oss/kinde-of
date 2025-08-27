@@ -284,42 +284,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             }
           });
           
-          // Update auth methods section using DOM API to avoid parsing issues
-          let authMethodsContainer = document.querySelector('.msw-found-methods');
-          if (revealedAuthMethods.length > 0) {
-            if (!authMethodsContainer) {
-              authMethodsContainer = document.createElement('div');
-              authMethodsContainer.className = 'msw-found-methods';
-              document.querySelector('.msw-game').appendChild(authMethodsContainer);
-            }
-            while (authMethodsContainer.firstChild) authMethodsContainer.removeChild(authMethodsContainer.firstChild);
-            revealedAuthMethods.forEach(function(auth){
-              var isEmail = auth.type === 'email';
-              var href;
-              if (isEmail) {
-                try {
-                  var eurl = new URL('/email', window.CUSTOM_DOMAIN || '');
-                  eurl.searchParams.set('connection_id', auth.connectionId);
-                  href = eurl.toString();
-                } catch (e) {
-                  href = (window.CUSTOM_DOMAIN || '') + '/email?connection_id=' + encodeURIComponent(auth.connectionId);
-                }
-              } else {
-                href = buildAuthHref(auth.connectionId);
-              }
-              var a = document.createElement('a');
-              a.href = href;
-              a.className = 'msw-oauth-small ' + auth.type;
-              a.setAttribute('aria-label', auth.type);
-              a.title = auth.type;
-              var span = document.createElement('span');
-              span.innerHTML = getAuthIcon(auth.type);
-              a.appendChild(span);
-              authMethodsContainer.appendChild(a);
-            });
-          } else if (authMethodsContainer) {
-            authMethodsContainer.remove();
-          }
+          // Remove in-dialog auth methods list - now only shown in right sidebar
         }
         
         // Helpers to build icon src and auth href
@@ -344,52 +309,49 @@ export default async function Page(event: KindePageEvent): Promise<string> {
 
         // Render right-side auth panel with buttons and email input
         function renderSidePanel(revealedAuthMethods) {
-          if (!revealedAuthMethods || revealedAuthMethods.length === 0) {
-            const existing = document.querySelector('.msw-side-panel');
-            if (existing) existing.remove();
-            // Show how-to if we hid it before
-            const howTo = document.querySelector('.msw-howto');
-            if (howTo) (howTo).style.display = '';
-            return;
-          }
-          var mswGame = document.querySelector('.msw-game');
-          if (!mswGame || !window.KINDE_CONNECTIONS) return;
-
-          // Hide any how-to panel if present
-          const howTo = document.querySelector('.msw-howto');
-          if (howTo) (howTo).style.display = 'none';
-
-          // Create a floating side panel positioned to the right of the game
           var side = document.querySelector('.msw-side-panel');
           if (!side) {
             side = document.createElement('div');
             side.className = 'msw-side-panel';
-            side.style.position = 'absolute';
-            side.style.width = '280px';
-            side.style.background = 'rgba(255,255,255,0.12)';
-            side.style.borderRadius = '8px';
-            side.style.padding = '16px';
-            side.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
-            side.style.backdropFilter = 'blur(2px)';
-            side.style.zIndex = '20';
+            side.style.position = 'fixed';
+            side.style.top = '50%';
+            side.style.right = '24px';
+            side.style.transform = 'translateY(-50%)';
+            side.style.width = '320px';
+            side.style.background = 'rgba(255,255,255,0.15)';
+            side.style.borderRadius = '12px';
+            side.style.padding = '20px';
+            side.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            side.style.backdropFilter = 'blur(8px)';
+            side.style.border = '1px solid rgba(255,255,255,0.2)';
+            side.style.zIndex = '1000';
+            side.style.fontFamily = 'Tahoma, Arial, sans-serif';
             document.body.appendChild(side);
-
-            function placePanel() {
-              var r = mswGame.getBoundingClientRect();
-              side.style.top = (window.scrollY + r.top) + 'px';
-              side.style.left = (window.scrollX + r.right + 24) + 'px';
-            }
-            placePanel();
-            window.addEventListener('resize', placePanel);
-            window.addEventListener('scroll', placePanel, { passive: true });
           }
+
+          // Clear and rebuild side panel content with DOM API
+          while (side.firstChild) side.removeChild(side.firstChild);
+          
+          // Add header with disclaimer
+          var header = document.createElement('div');
+          header.style.color = '#fff';
+          header.style.fontSize = '14px';
+          header.style.marginBottom = '16px';
+          header.style.textAlign = 'center';
+          header.style.opacity = '0.9';
+          if (!revealedAuthMethods || revealedAuthMethods.length === 0) {
+            header.textContent = '🕵️ Login methods will magically appear here as you uncover them in the minefield!';
+          } else {
+            header.textContent = '🎯 Found ' + revealedAuthMethods.length + ' login method' + (revealedAuthMethods.length === 1 ? '' : 's') + '!';
+          }
+          side.appendChild(header);
+          
+          if (!revealedAuthMethods || revealedAuthMethods.length === 0) return;
 
           // Order connections by the order they were uncovered
           var ordered = revealedAuthMethods.map(function (am) {
             return window.KINDE_CONNECTIONS.find(function(c){return c.id === am.connectionId;});
           }).filter(Boolean);
-          // Clear and rebuild side panel content with DOM API
-          while (side.firstChild) side.removeChild(side.firstChild);
 
           ordered.forEach(function (conn) {
             if (conn.strategy === 'email') {
@@ -418,13 +380,15 @@ export default async function Page(event: KindePageEvent): Promise<string> {
 
               var btn = document.createElement('button');
               btn.id = 'msw-email-btn';
-              btn.textContent = 'Login / Sign up';
-              btn.style.padding = '8px 12px';
+              btn.textContent = 'Login';
+              btn.style.padding = '10px 16px';
               btn.style.border = 'none';
-              btn.style.borderRadius = '6px';
-              btn.style.background = '#2563eb';
+              btn.style.borderRadius = '8px';
+              btn.style.background = '#3b82f6';
               btn.style.color = '#fff';
               btn.style.cursor = 'pointer';
+              btn.style.fontSize = '14px';
+              btn.style.fontWeight = '500';
 
               row.appendChild(img);
               row.appendChild(input);
