@@ -97,7 +97,8 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         function updateGame(newRevealed, seed) {
           const params = new URLSearchParams();
           if (newRevealed.length > 0) {
-            params.set('revealed', newRevealed.sort((a, b) => a - b).join(','));
+            // Preserve reveal order so side panel lists in uncover order
+            params.set('revealed', newRevealed.join(','));
           }
           if (seed && seed !== 12345) {
             params.set('seed', seed.toString());
@@ -342,32 +343,51 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         }
 
         // Render right-side auth panel with buttons and email input
-        function renderSidePanel() {
+        function renderSidePanel(revealedAuthMethods) {
+          if (!revealedAuthMethods || revealedAuthMethods.length === 0) {
+            const existing = document.querySelector('.msw-side-panel');
+            if (existing) existing.remove();
+            // Show how-to if we hid it before
+            const howTo = document.querySelector('.msw-howto');
+            if (howTo) (howTo).style.display = '';
+            return;
+          }
           var mswGame = document.querySelector('.msw-game');
           if (!mswGame || !window.KINDE_CONNECTIONS) return;
 
-          var container = mswGame.parentElement;
-          if (!container) return;
-          container.style.display = 'flex';
-          container.style.alignItems = 'flex-start';
-          container.style.gap = '24px';
+          // Hide any how-to panel if present
+          const howTo = document.querySelector('.msw-howto');
+          if (howTo) (howTo).style.display = 'none';
 
+          // Create a floating side panel positioned to the right of the game
           var side = document.querySelector('.msw-side-panel');
           if (!side) {
             side = document.createElement('div');
             side.className = 'msw-side-panel';
-            side.style.flex = '0 0 280px';
+            side.style.position = 'absolute';
+            side.style.width = '280px';
             side.style.background = 'rgba(255,255,255,0.12)';
             side.style.borderRadius = '8px';
             side.style.padding = '16px';
             side.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
-            container.appendChild(side);
+            side.style.backdropFilter = 'blur(2px)';
+            side.style.zIndex = '20';
+            document.body.appendChild(side);
+
+            function placePanel() {
+              var r = mswGame.getBoundingClientRect();
+              side.style.top = (window.scrollY + r.top) + 'px';
+              side.style.left = (window.scrollX + r.right + 24) + 'px';
+            }
+            placePanel();
+            window.addEventListener('resize', placePanel);
+            window.addEventListener('scroll', placePanel, { passive: true });
           }
 
-          var ordered = [];
-          // Put email first
-          window.KINDE_CONNECTIONS.forEach(function (c) { if (c.strategy === 'email') ordered.push(c); });
-          window.KINDE_CONNECTIONS.forEach(function (c) { if (c.strategy !== 'email') ordered.push(c); });
+          // Order connections by the order they were uncovered
+          var ordered = revealedAuthMethods.map(function (am) {
+            return window.KINDE_CONNECTIONS.find(function(c){return c.id === am.connectionId;});
+          }).filter(Boolean);
           // Clear and rebuild side panel content with DOM API
           while (side.firstChild) side.removeChild(side.firstChild);
 
@@ -398,7 +418,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
 
               var btn = document.createElement('button');
               btn.id = 'msw-email-btn';
-              btn.textContent = 'Email';
+              btn.textContent = 'Login / Sign up';
               btn.style.padding = '8px 12px';
               btn.style.border = 'none';
               btn.style.borderRadius = '6px';
@@ -478,8 +498,13 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           });
         });
         
-        // Render side panel
-        renderSidePanel();
+        // Render side panel only when something is revealed
+        (function syncSidePanel() {
+          const { revealed, seed } = getUrlParams();
+          const authMethods = generateAuthMethods(seed);
+          const revealedAuthMethods = authMethods.filter(am => revealed.includes(am.position));
+          renderSidePanel(revealedAuthMethods);
+        })();
 
         // Handle reset button
         const resetBtn = document.querySelector('.msw-reset');
