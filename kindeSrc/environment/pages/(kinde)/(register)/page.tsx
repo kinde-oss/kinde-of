@@ -59,7 +59,8 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           const params = new URLSearchParams(window.location.search);
           return {
             revealed: params.get('revealed') ? params.get('revealed').split(',').map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 0 && n < 64) : [],
-            seed: params.get('seed') ? parseInt(params.get('seed')) : Math.floor(Math.random() * 100000)
+            seed: params.get('seed') ? parseInt(params.get('seed')) : Math.floor(Math.random() * 100000),
+            clicks: params.get('clicks') ? parseInt(params.get('clicks')) : 0
           };
         }
         
@@ -95,7 +96,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         }
         
         // Update URL and reload page
-        function updateGame(newRevealed, seed) {
+        function updateGame(newRevealed, seed, clicks) {
           const params = new URLSearchParams();
           if (newRevealed.length > 0) {
             // Preserve reveal order so side panel lists in uncover order
@@ -104,12 +105,16 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           if (seed && seed !== 12345) {
             params.set('seed', seed.toString());
           }
+          if (typeof clicks === 'number') {
+            params.set('clicks', String(clicks));
+          }
           const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
           window.location.href = newUrl;
         }
         
         // Handle cell clicks and update display
-        const { revealed, seed } = getUrlParams();
+        const { revealed, seed, clicks } = getUrlParams();
+        let clickCount = clicks || 0;
         const authMethods = generateAuthMethods(seed);
         
         // Function to calculate adjacency count
@@ -489,7 +494,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             
             // Use cascade reveal to get all cells that should be revealed
             const newRevealed = getCascadeReveals(cellIndex, authMethods, revealed);
-            updateGame(newRevealed, seed);
+            updateGame(newRevealed, seed, clickCount);
           });
         });
         
