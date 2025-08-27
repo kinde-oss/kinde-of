@@ -296,7 +296,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => {
               var isEmail = auth.type === 'email';
               var href = isEmail
-                ? '/auth/email?connection_id=' + auth.connectionId
+                ? (window.CUSTOM_DOMAIN || '') + '/email?connection_id=' + auth.connectionId
                 : (window.CUSTOM_DOMAIN || '') + '/api/auth/login?connection_id=' + auth.connectionId;
               return '<a href="' + href + '" class="msw-oauth-small ' + auth.type + '" aria-label="' + auth.type + '" title="' + auth.type + '">' +
                 getAuthIcon(auth.type) +
