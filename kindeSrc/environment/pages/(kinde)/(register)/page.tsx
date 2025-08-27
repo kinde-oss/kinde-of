@@ -137,17 +137,18 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           return colors[num] || '#000000';
         }
         
-        // Function to get display icon for auth type
+        // Function to get display icon for auth type (image)
         function getAuthIcon(type) {
-          switch (type) {
-            case 'google': return 'G';
-            case 'facebook': return 'f';
-            case 'email': return '✉';
-            case 'microsoft': return 'M';
-            case 'apple': return '';
-            case 'github': return '';
-            default: return '?';
+          var srcMap = {
+            google: '/images/files/google.png',
+            facebook: '/images/files/facebook.png',
+            email: '/images/files/email.png'
+          };
+          var src = srcMap[type];
+          if (!src) {
+            return '?';
           }
+          return '<img src="' + src + '" alt="' + type + '" style="width:20px;height:20px;object-fit:contain;display:block;margin:0 auto;" />';
         }
         
         // Function to get auth type color
@@ -262,7 +263,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
                 cell.style.color = 'white';
                 cell.style.fontWeight = 'bold';
                 cell.style.fontSize = '20px';
-                cell.innerHTML = '<span style="font-family: Tahoma, Arial, sans-serif;">' + getAuthIcon(authMethod.type) + '</span>';
+                cell.innerHTML = getAuthIcon(authMethod.type);
               } else {
                 // Show number or empty
                 cell.style.backgroundColor = '#e0e0e0';
@@ -291,11 +292,11 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             
             // Create auth method links using proper Kinde API auth pattern
             authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => 
-              '<a href="/api/auth/login?connection_id=' + auth.connectionId + '" class="msw-oauth-small ' + auth.type + '">' +
-              '<div class="msw-oauth-icon-small ' + auth.type + '-icon">' +
+              '<a href="https://kinde-of.com/api/auth/login?connection_id=' + auth.connectionId + '" class="msw-oauth-small ' + auth.type + '">' +
+              '<div class="msw-oauth-icon-small ' + auth.type + '-icon" style="display:flex;align-items:center;gap:8px;">' +
               getAuthIcon(auth.type) +
+              '<span>' + auth.type.charAt(0).toUpperCase() + auth.type.slice(1) + '</span>' +
               '</div>' +
-              auth.type.charAt(0).toUpperCase() + auth.type.slice(1) +
               '</a>'
             ).join('');
           } else if (authMethodsContainer) {
