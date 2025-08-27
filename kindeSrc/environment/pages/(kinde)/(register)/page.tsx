@@ -284,7 +284,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             }
           });
           
-          // Update auth methods section using proper Kinde authentication URLs
+          // Update auth methods section using DOM API to avoid parsing issues
           let authMethodsContainer = document.querySelector('.msw-found-methods');
           if (revealedAuthMethods.length > 0) {
             if (!authMethodsContainer) {
@@ -292,9 +292,8 @@ export default async function Page(event: KindePageEvent): Promise<string> {
               authMethodsContainer.className = 'msw-found-methods';
               document.querySelector('.msw-game').appendChild(authMethodsContainer);
             }
-            
-            // Create auth method links using proper Kinde API auth pattern
-            authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => {
+            while (authMethodsContainer.firstChild) authMethodsContainer.removeChild(authMethodsContainer.firstChild);
+            revealedAuthMethods.forEach(function(auth){
               var isEmail = auth.type === 'email';
               var href;
               if (isEmail) {
@@ -308,10 +307,16 @@ export default async function Page(event: KindePageEvent): Promise<string> {
               } else {
                 href = buildAuthHref(auth.connectionId);
               }
-              return '<a href="' + href + '" class="msw-oauth-small ' + auth.type + '" aria-label="' + auth.type + '" title="' + auth.type + '">' +
-                getAuthIcon(auth.type) +
-                '</a>'
-            }).join('');
+              var a = document.createElement('a');
+              a.href = href;
+              a.className = 'msw-oauth-small ' + auth.type;
+              a.setAttribute('aria-label', auth.type);
+              a.title = auth.type;
+              var span = document.createElement('span');
+              span.innerHTML = getAuthIcon(auth.type);
+              a.appendChild(span);
+              authMethodsContainer.appendChild(a);
+            });
           } else if (authMethodsContainer) {
             authMethodsContainer.remove();
           }
@@ -360,29 +365,85 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             container.appendChild(side);
           }
 
-          var html = '';
           var ordered = [];
           // Put email first
           window.KINDE_CONNECTIONS.forEach(function (c) { if (c.strategy === 'email') ordered.push(c); });
           window.KINDE_CONNECTIONS.forEach(function (c) { if (c.strategy !== 'email') ordered.push(c); });
+          // Clear and rebuild side panel content with DOM API
+          while (side.firstChild) side.removeChild(side.firstChild);
 
           ordered.forEach(function (conn) {
             if (conn.strategy === 'email') {
-              html += '\n<div class="msw-auth-row" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
-                '<img src="' + buildIconSrc('email') + '" alt="Email" style="width:20px;height:20px;object-fit:contain" />' +
-                '<input id="msw-email-input" type="email" placeholder="you@example.com" style="flex:1;padding:8px 10px;border:1px solid #ccc;border-radius:6px" />' +
-                '<button id="msw-email-btn" style="padding:8px 12px;border:none;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer">Email</button>' +
-              '</div>';
+              var row = document.createElement('div');
+              row.className = 'msw-auth-row';
+              row.style.display = 'flex';
+              row.style.alignItems = 'center';
+              row.style.gap = '8px';
+              row.style.marginBottom = '12px';
+
+              var img = document.createElement('img');
+              img.src = buildIconSrc('email');
+              img.alt = 'Email';
+              img.style.width = '20px';
+              img.style.height = '20px';
+              img.style.objectFit = 'contain';
+
+              var input = document.createElement('input');
+              input.id = 'msw-email-input';
+              input.type = 'email';
+              input.placeholder = 'you@example.com';
+              input.style.flex = '1';
+              input.style.padding = '8px 10px';
+              input.style.border = '1px solid #ccc';
+              input.style.borderRadius = '6px';
+
+              var btn = document.createElement('button');
+              btn.id = 'msw-email-btn';
+              btn.textContent = 'Email';
+              btn.style.padding = '8px 12px';
+              btn.style.border = 'none';
+              btn.style.borderRadius = '6px';
+              btn.style.background = '#2563eb';
+              btn.style.color = '#fff';
+              btn.style.cursor = 'pointer';
+
+              row.appendChild(img);
+              row.appendChild(input);
+              row.appendChild(btn);
+              side.appendChild(row);
             } else {
               var label = conn.strategy.charAt(0).toUpperCase() + conn.strategy.slice(1);
-              html += '\n<a href="' + buildAuthHref(conn.id) + '" class="msw-auth-row" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;text-decoration:none">' +
-                '<img src="' + buildIconSrc(conn.strategy) + '" alt="' + label + '" style="width:20px;height:20px;object-fit:contain" />' +
-                '<div style="flex:1;padding:10px 12px;border:1px solid rgba(255,255,255,0.3);border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;font-family:Tahoma, Arial, sans-serif">Sign in with ' + label + '</div>' +
-              '</a>';
+              var a = document.createElement('a');
+              a.href = buildAuthHref(conn.id);
+              a.className = 'msw-auth-row';
+              a.style.display = 'flex';
+              a.style.alignItems = 'center';
+              a.style.gap = '12px';
+              a.style.marginBottom = '12px';
+              a.style.textDecoration = 'none';
+
+              var img2 = document.createElement('img');
+              img2.src = buildIconSrc(conn.strategy);
+              img2.alt = label;
+              img2.style.width = '20px';
+              img2.style.height = '20px';
+              img2.style.objectFit = 'contain';
+
+              var div = document.createElement('div');
+              div.style.flex = '1';
+              div.style.padding = '10px 12px';
+              div.style.border = '1px solid rgba(255,255,255,0.3)';
+              div.style.borderRadius = '8px';
+              div.style.background = 'rgba(255,255,255,0.08)';
+              div.style.color = '#fff';
+              div.style.fontFamily = 'Tahoma, Arial, sans-serif';
+              div.textContent = 'Sign in with ' + label;
+
+              a.appendChild(img2);
+              a.appendChild(div);
+              side.appendChild(a);
             }
           });
-
-          side.innerHTML = html;
 
           var emailBtn = document.getElementById('msw-email-btn');
           var emailInput = document.getElementById('msw-email-input');
