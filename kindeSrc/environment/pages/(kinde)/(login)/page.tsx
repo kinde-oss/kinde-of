@@ -7,12 +7,11 @@ import {
   type KindePageEvent,
   getKindeNonce,
   getKindeWidget,
-  getKindeLoginUrl,
 } from '@kinde/infrastructure';
 import React from 'react';
 import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
-import { Connections, init } from '@kinde/management-api-js';
+import { Applications, init } from '@kinde/management-api-js';
 import MinesweeperAuthMethods from '../../../../components/MinesweeperAuthMethods';
 
 const LoginPage: React.FC<
@@ -43,8 +42,7 @@ const LoginPage: React.FC<
 };
 
 export default async function Page(event: KindePageEvent): Promise<string> {
-  // Get the Kinde login URL for use in JavaScript
-  const kindeLoginUrl = getKindeLoginUrl();
+  // No longer need manual login URL since we're using LoginLink
 
   // Fetch connections dynamically using Kinde Management API
   let connections: Array<{ id: string; strategy: string }> = [];
@@ -53,8 +51,12 @@ export default async function Page(event: KindePageEvent): Promise<string> {
     // Initialize Management API client
     init();
 
-    // Fetch all connections
-    const connectionsResponse = await Connections.getConnections();
+    const applicationId = 'e194c444dc3f47d3a608895f502ca7a0';
+
+    // Fetch connections for the specific application
+    const connectionsResponse = await Applications.getApplicationConnections({
+      applicationId,
+    });
 
     if (connectionsResponse && connectionsResponse.connections) {
       connections = connectionsResponse.connections.map((conn: any) => ({
@@ -78,7 +80,6 @@ export default async function Page(event: KindePageEvent): Promise<string> {
   // Add the minesweeper JavaScript after rendering
   const script = `
     <script nonce="${getKindeNonce()}">
-      window.KINDE_LOGIN_URL = '${kindeLoginUrl}';
       window.KINDE_CONNECTIONS = ${JSON.stringify(connections)};
     </script>
     <script nonce="${getKindeNonce()}">
