@@ -218,6 +218,7 @@ export const getStyles = (): string => `
     font-weight: bold;
     cursor: pointer;
     transition: all 0.1s ease;
+    font-family: inherit;
   }
 
   .msw-oauth-small:hover {

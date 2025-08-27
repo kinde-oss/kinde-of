@@ -13,6 +13,31 @@ import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
 
 const LoginPage: React.FC<KindePageEvent> = ({ context, request }) => {
+  // Check if there's a connection_id in the URL to trigger auth
+  const url = (request as any).url || '';
+  const connectionIdMatch = url.match(/[?&]connection_id=([^&]*)/);
+
+  if (connectionIdMatch) {
+    // If connection_id is present, redirect to proper auth flow
+    const connectionId = connectionIdMatch[1];
+    const authUrl = `/api/auth/login?connection_id=${connectionId}`;
+
+    return (
+      <Root context={context} request={request}>
+        <DefaultLayout>
+          <div data-kinde-root="/auth">
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.location.href = '${authUrl}';`,
+              }}
+            />
+            <div>Redirecting to authentication...</div>
+          </div>
+        </DefaultLayout>
+      </Root>
+    );
+  }
+
   return (
     <Root context={context} request={request}>
       <DefaultLayout>
@@ -130,6 +155,46 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           }
         }
         
+        // Cascade reveal function
+        function getCascadeReveals(startCell, authMethods, currentRevealed = []) {
+          const toReveal = new Set(currentRevealed);
+          const queue = [startCell];
+          const visited = new Set();
+          
+          while (queue.length > 0) {
+            const cell = queue.shift();
+            if (visited.has(cell) || cell < 0 || cell >= 64) continue;
+            visited.add(cell);
+            toReveal.add(cell);
+            
+            const adjacencyCount = calculateAdjacency(cell, authMethods);
+            const isAuth = authMethods.some(am => am.position === cell);
+            
+            // If it's an empty cell (no adjacent auth methods and not an auth method itself)
+            if (adjacencyCount === 0 && !isAuth) {
+              // Add all 8 neighbors to queue
+              const row = Math.floor(cell / 8);
+              const col = cell % 8;
+              
+              for (let r = -1; r <= 1; r++) {
+                for (let c = -1; c <= 1; c++) {
+                  if (r === 0 && c === 0) continue;
+                  const newRow = row + r;
+                  const newCol = col + c;
+                  if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const neighborCell = newRow * 8 + newCol;
+                    if (!visited.has(neighborCell)) {
+                      queue.push(neighborCell);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          
+          return Array.from(toReveal);
+        }
+        
         // Update display based on current state
         function updateDisplay() {
           const { revealed, seed } = getUrlParams();
@@ -152,15 +217,32 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             
             if (isRevealed) {
               cell.className = 'msw-cell revealed' + (isAuth ? ' auth' : '');
-              cell.style.backgroundColor = isAuth 
-                ? (authMethod.type === 'google' ? '#4285f4' : authMethod.type === 'facebook' ? '#1877f2' : '#ff6b35')
-                : '';
-              cell.style.color = !isAuth && adjacencyCount > 0 ? getNumberColor(adjacencyCount) : 'transparent';
-              cell.style.fontWeight = isAuth ? 'bold' : 'normal';
-              cell.style.fontSize = isAuth ? '16px' : '12px';
-              cell.textContent = isAuth 
-                ? (authMethod.type === 'google' ? 'G' : authMethod.type === 'facebook' ? 'f' : '✉')
-                : (adjacencyCount > 0 ? adjacencyCount : '');
+              
+              if (isAuth) {
+                // Show auth method with proper styling and icon
+                cell.style.backgroundColor = authMethod.type === 'google' ? '#4285f4' : authMethod.type === 'facebook' ? '#1877f2' : '#ff6b35';
+                cell.style.color = 'white';
+                cell.style.fontWeight = 'bold';
+                cell.style.fontSize = '20px';
+                cell.innerHTML = authMethod.type === 'google' 
+                  ? '<span style="font-family: Arial, sans-serif;">G</span>' 
+                  : authMethod.type === 'facebook' 
+                    ? '<span style="font-family: Arial, sans-serif; font-weight: bold;">f</span>'
+                    : '<span style="font-size: 16px;">📧</span>';
+              } else {
+                // Show number or empty
+                cell.style.backgroundColor = '#e0e0e0';
+                cell.style.color = adjacencyCount > 0 ? getNumberColor(adjacencyCount) : 'transparent';
+                cell.style.fontWeight = 'bold';
+                cell.style.fontSize = '12px';
+                cell.textContent = adjacencyCount > 0 ? adjacencyCount : '';
+              }
+            } else {
+              // Hidden cell - make sure it's clickable
+              cell.className = 'msw-cell hidden';
+              cell.style.backgroundColor = '';
+              cell.style.color = '';
+              cell.textContent = '';
             }
           });
           
@@ -174,13 +256,31 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             }
             
             authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => 
-              '<a href="/api/auth/login?connection_id=' + getConnectionId(auth.type) + '" class="msw-oauth-small ' + auth.type + '">' +
+              '<button data-connection-id="' + getConnectionId(auth.type) + '" data-auth-type="' + auth.type + '" class="msw-oauth-small ' + auth.type + '">' +
               '<div class="msw-oauth-icon-small ' + auth.type + '-icon">' +
               (auth.type === 'google' ? 'G' : auth.type === 'facebook' ? 'f' : '✉') +
               '</div>' +
               auth.type.charAt(0).toUpperCase() + auth.type.slice(1) +
-              '</a>'
+              '</button>'
             ).join('');
+            
+            // Add click handlers for auth buttons
+            authMethodsContainer.querySelectorAll('.msw-oauth-small').forEach(btn => {
+              btn.addEventListener('click', function() {
+                const connectionId = this.getAttribute('data-connection-id');
+                const authType = this.getAttribute('data-auth-type');
+                
+                // Get current URL to construct proper auth redirect
+                const currentUrl = new URL(window.location.href);
+                const baseUrl = currentUrl.origin + currentUrl.pathname;
+                
+                // Create auth URL with connection_id parameter
+                const authUrl = baseUrl + '?connection_id=' + connectionId;
+                
+                // Navigate to the auth URL
+                window.location.href = authUrl;
+              });
+            });
           } else if (authMethodsContainer) {
             authMethodsContainer.remove();
           }
@@ -189,11 +289,19 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         // Initial display update
         updateDisplay();
         
-        document.querySelectorAll('.msw-cell.hidden').forEach((cell) => {
+        // Add click handlers to ALL cells (both hidden and revealed for consistency)
+        document.querySelectorAll('.msw-cell').forEach((cell) => {
           cell.addEventListener('click', function(e) {
             e.preventDefault();
             const cellIndex = parseInt(cell.getAttribute('data-cell-index'));
-            const newRevealed = [...revealed, cellIndex];
+            const { revealed, seed } = getUrlParams();
+            const authMethods = generateAuthMethods(seed);
+            
+            // Don't do anything if already revealed
+            if (revealed.includes(cellIndex)) return;
+            
+            // Use cascade reveal to get all cells that should be revealed
+            const newRevealed = getCascadeReveals(cellIndex, authMethods, revealed);
             updateGame(newRevealed, seed);
           });
         });
