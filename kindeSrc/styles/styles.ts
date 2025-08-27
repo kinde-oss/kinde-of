@@ -193,8 +193,7 @@ export const getStyles = (): string => `
 
 
   .msw-instructions-panel {
-    min-width: 200px;
-    margin-top: 40px; /* Align with window content */
+    display: none; /* Hide the instructions panel to prevent white box */
   }
 
   .msw-found-methods {

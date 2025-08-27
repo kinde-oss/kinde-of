@@ -237,17 +237,26 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           return Array.from(toReveal);
         }
         
+        // Global click counter
+        let clickCount = 0;
+
         // Update display based on current state
         function updateDisplay() {
           const { revealed, seed } = getUrlParams();
           const authMethods = generateAuthMethods(seed);
           const revealedAuthMethods = authMethods.filter(am => revealed.includes(am.position));
           
-          // Update counter - use dynamic connection count
-          const counter = document.querySelector('.msw-counter');
+          // Update bomb counter - use dynamic connection count
+          const bombCounter = document.getElementById('msw-bomb-counter');
           const totalConnections = window.KINDE_CONNECTIONS ? window.KINDE_CONNECTIONS.length : 3;
-          if (counter) {
-            counter.textContent = String(totalConnections - revealedAuthMethods.length).padStart(3, '0');
+          if (bombCounter) {
+            bombCounter.textContent = String(totalConnections - revealedAuthMethods.length).padStart(2, '0');
+          }
+          
+          // Update click counter
+          const clickCounter = document.getElementById('msw-click-counter');
+          if (clickCounter) {
+            clickCounter.textContent = String(clickCount).padStart(2, '0');
           }
           
           // Update cells
@@ -316,7 +325,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             side.className = 'msw-side-panel';
             side.style.position = 'fixed';
             side.style.top = '50%';
-            side.style.right = '24px';
+            side.style.left = 'calc(50% + 280px)';
             side.style.transform = 'translateY(-50%)';
             side.style.width = '320px';
             side.style.background = 'linear-gradient(180deg, #d4d0c8 0%, #c0c0c0 100%)';
@@ -468,6 +477,9 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             
             // Don't do anything if already revealed
             if (revealed.includes(cellIndex)) return;
+            
+            // Increment click counter for grid clicks
+            clickCount++;
             
             // Use cascade reveal to get all cells that should be revealed
             const newRevealed = getCascadeReveals(cellIndex, authMethods, revealed);

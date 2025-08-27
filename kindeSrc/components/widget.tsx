@@ -139,13 +139,15 @@ export const Widget: React.FC<WidgetProps> = (props) => {
 
             <div className="msw-game">
               <div className="msw-game-header">
-                <div className="msw-counter">
-                  {String(3 - revealedAuthMethods.length).padStart(3, '0')}
+                <div className="msw-counter" id="msw-bomb-counter">
+                  {String(3 - revealedAuthMethods.length).padStart(2, '0')}
                 </div>
                 <a href="?seed=0" className="msw-reset">
                   😊
                 </a>
-                <div className="msw-counter">000</div>
+                <div className="msw-counter" id="msw-click-counter">
+                  00
+                </div>
               </div>
 
               <div className="msw-field">
