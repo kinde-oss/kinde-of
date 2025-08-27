@@ -170,44 +170,73 @@ export default async function Page(event: KindePageEvent): Promise<string> {
           }
         }
         
-        // Cascade reveal function - proper minesweeper flood fill
+        // Proper minesweeper cascade logic
         function getCascadeReveals(startCell, authMethods, currentRevealed = []) {
           const toReveal = new Set(currentRevealed);
           const queue = [startCell];
           const processed = new Set();
           
+          // If clicking on an auth method (mine), just reveal that cell
+          const isStartCellAuth = authMethods.some(am => am.position === startCell);
+          if (isStartCellAuth) {
+            toReveal.add(startCell);
+            return Array.from(toReveal);
+          }
+          
+          // Start with the clicked cell
+          toReveal.add(startCell);
+          
+          // Check if the starting cell is empty (0 adjacent mines)
+          const startAdjacency = calculateAdjacency(startCell, authMethods);
+          
+          // If starting cell has numbers (1-8), only reveal that cell
+          if (startAdjacency > 0) {
+            return Array.from(toReveal);
+          }
+          
+          // If starting cell is empty (0), do flood fill
+          queue.push(startCell);
+          processed.add(startCell);
+          
           while (queue.length > 0) {
             const cell = queue.shift();
-            if (processed.has(cell) || cell < 0 || cell >= 64) continue;
-            processed.add(cell);
-            toReveal.add(cell);
-            
             const adjacencyCount = calculateAdjacency(cell, authMethods);
-            const isAuth = authMethods.some(am => am.position === cell);
             
-            // Don't cascade through auth methods (bombs)
-            if (isAuth) continue;
-            
-            // If it's an empty cell (0 adjacent auth methods), cascade to all neighbors
+            // Only continue cascade from empty cells (0 adjacent mines)
             if (adjacencyCount === 0) {
               const row = Math.floor(cell / 8);
               const col = cell % 8;
               
+              // Check all 8 neighbors
               for (let r = -1; r <= 1; r++) {
                 for (let c = -1; c <= 1; c++) {
-                  if (r === 0 && c === 0) continue; // Skip the current cell
+                  if (r === 0 && c === 0) continue;
+                  
                   const newRow = row + r;
                   const newCol = col + c;
+                  
                   if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
                     const neighborCell = newRow * 8 + newCol;
-                    if (!processed.has(neighborCell) && !toReveal.has(neighborCell)) {
+                    
+                    // Skip if already processed or is an auth method
+                    if (processed.has(neighborCell)) continue;
+                    
+                    const isNeighborAuth = authMethods.some(am => am.position === neighborCell);
+                    if (isNeighborAuth) continue;
+                    
+                    // Always reveal the neighbor
+                    toReveal.add(neighborCell);
+                    processed.add(neighborCell);
+                    
+                    // Only add to queue if neighbor is also empty (for further cascading)
+                    const neighborAdjacency = calculateAdjacency(neighborCell, authMethods);
+                    if (neighborAdjacency === 0) {
                       queue.push(neighborCell);
                     }
                   }
                 }
               }
             }
-            // If it has adjacent auth methods (numbers 1-8), reveal it but don't cascade further
           }
           
           return Array.from(toReveal);
