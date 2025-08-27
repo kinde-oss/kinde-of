@@ -49,6 +49,8 @@ export default async function Page(event: KindePageEvent): Promise<string> {
   const script = `
     <script nonce="${getKindeNonce()}">
       window.KINDE_CONNECTIONS = ${JSON.stringify(connections)};
+      window.CUSTOM_DOMAIN = 'https://kinde-of.com';
+      window.ICON_BASE = 'https://www.kinde-of.com';
     </script>
     <script nonce="${getKindeNonce()}">
       document.addEventListener('DOMContentLoaded', function() {
@@ -139,10 +141,11 @@ export default async function Page(event: KindePageEvent): Promise<string> {
         
         // Function to get display icon for auth type (image)
         function getAuthIcon(type) {
+          var base = window.ICON_BASE || '';
           var srcMap = {
-            google: '/images/files/google.png',
-            facebook: '/images/files/facebook.png',
-            email: '/images/files/email.png'
+            google: base + '/images/files/google.png',
+            facebook: base + '/images/files/facebook.png',
+            email: base + '/images/files/email.png'
           };
           var src = srcMap[type];
           if (!src) {
@@ -292,7 +295,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             
             // Create auth method links using proper Kinde API auth pattern
             authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => 
-              '<a href="https://kinde-of.com/api/auth/login?connection_id=' + auth.connectionId + '" class="msw-oauth-small ' + auth.type + '">' +
+              '<a href="' + (window.CUSTOM_DOMAIN || '') + '/api/auth/login?connection_id=' + auth.connectionId + '" class="msw-oauth-small ' + auth.type + '">' +
               '<div class="msw-oauth-icon-small ' + auth.type + '-icon" style="display:flex;align-items:center;gap:8px;">' +
               getAuthIcon(auth.type) +
               '<span>' + auth.type.charAt(0).toUpperCase() + auth.type.slice(1) + '</span>' +
