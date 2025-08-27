@@ -22,6 +22,7 @@ export default function ConditionalLayout({
 }: ConditionalLayoutProps) {
   const pathname = usePathname();
   const isDashboard = pathname === '/dashboard';
+  const isHomepage = pathname === '/';
 
   if (isDashboard) {
     return (
@@ -69,6 +70,11 @@ export default function ConditionalLayout({
         <main>{children}</main>
       </>
     );
+  }
+
+  // For homepage (boot screen), just render children without header/footer
+  if (isHomepage) {
+    return <main>{children}</main>;
   }
 
   return (

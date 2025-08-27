@@ -48,6 +48,21 @@ body {
   font-family: var(--g-font-family);
 }
 
+body.app-body {
+  background-image: url('/images/windowsXPBackground.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Override background for homepage - retro boot screen */
+body.app-body:has(.boot-screen) {
+  background: #0000a6;
+  background: linear-gradient(135deg, #0000ff 0%, #0000aa 100%);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -219,4 +234,164 @@ a {
 
 .next-steps-section {
   margin-top: var(--g-spacing-2x-large);
+}
+
+/* Retro Windows Boot Screen Styles */
+.boot-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Perfect DOS VGA 437', 'MS Sans Serif', monospace;
+  overflow: hidden;
+  /* Pixelated rendering */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.boot-content {
+  text-align: center;
+  max-width: 800px;
+  padding: 40px;
+}
+
+/* Logo container */
+.boot-logo-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 120px;
+}
+
+/* Main Kinde Of logo - authentic pixelated with Sixtyfour font */
+.boot-logo {
+  font-family:
+    var(--font-sixtyfour), 'Perfect DOS VGA 437', 'MS Gothic', 'Courier New',
+    monospace;
+  font-size: 120px;
+  font-weight: 400;
+  font-style: italic;
+  margin: 0;
+  letter-spacing: 8px;
+  /* Authentic pixelated shadow effect */
+  text-shadow:
+    3px 3px 0px rgba(255, 255, 255, 0.3),
+    6px 6px 0px rgba(0, 0, 0, 0.8),
+    9px 9px 0px rgba(0, 0, 0, 0.6);
+  transform: skew(-12deg);
+  /* Force pixelated rendering */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* CSS filters for extra pixelation effect */
+  filter: contrast(1.2) brightness(1.1);
+  text-rendering: geometricPrecision;
+}
+
+/* Registered trademark symbol - pixelated with Sixtyfour */
+.boot-logo-mark {
+  position: absolute;
+  top: -15px;
+  right: -40px;
+  font-family:
+    var(--font-sixtyfour), 'Perfect DOS VGA 437', 'MS Gothic', 'Courier New',
+    monospace;
+  font-size: 40px;
+  font-weight: 400;
+  font-style: normal;
+  transform: skew(0deg);
+  text-shadow:
+    2px 2px 0px rgba(255, 255, 255, 0.2),
+    3px 3px 0px rgba(0, 0, 0, 0.8);
+  /* Force bitmap rendering */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  image-rendering: pixelated;
+  filter: contrast(1.3);
+}
+
+/* Auth buttons */
+.boot-auth {
+  margin: 80px 0;
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.boot-button {
+  font-family:
+    var(--font-sixtyfour), 'Perfect DOS VGA 437', 'MS Gothic', 'Courier New',
+    monospace;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 20px 40px;
+  background: none;
+  border: 4px solid white;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  min-width: 140px;
+  text-align: center;
+  transition: all 0.05s ease;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  /* Pixelated button styling with Sixtyfour */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  image-rendering: pixelated;
+  text-rendering: geometricPrecision;
+  filter: contrast(1.2);
+  /* Chunky retro button shadow */
+  box-shadow:
+    4px 4px 0px rgba(0, 0, 0, 0.9),
+    8px 8px 0px rgba(0, 0, 0, 0.7),
+    12px 12px 0px rgba(0, 0, 0, 0.5);
+}
+
+.boot-button:hover {
+  background: white;
+  color: #0000a6;
+  text-decoration: none;
+  transform: translate(3px, 3px);
+  box-shadow:
+    2px 2px 0px rgba(0, 0, 0, 0.9),
+    4px 4px 0px rgba(0, 0, 0, 0.7),
+    6px 6px 0px rgba(0, 0, 0, 0.5);
+  filter: contrast(1.3);
+}
+
+/* Copyright text - pixelated with Sixtyfour */
+.boot-copyright {
+  font-family:
+    var(--font-sixtyfour), 'Perfect DOS VGA 437', 'MS Gothic', 'Courier New',
+    monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.8;
+  margin-top: 100px;
+  opacity: 0.95;
+  letter-spacing: 2px;
+  /* Pixelated text rendering with Sixtyfour */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  image-rendering: pixelated;
+  text-rendering: geometricPrecision;
+  filter: contrast(1.1);
+}
+
+/* Hide navigation on boot screen */
+.boot-screen ~ header,
+.boot-screen ~ footer {
+  display: none;
 }

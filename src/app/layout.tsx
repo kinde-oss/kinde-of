@@ -2,6 +2,15 @@ import './globals.css';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import ConditionalLayout from '@/components/ConditionalLayout';
 
+// Import Sixtyfour pixel font from Google Fonts
+import { Sixtyfour } from 'next/font/google';
+
+const sixtyfour = Sixtyfour({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sixtyfour',
+});
+
 export const metadata = {
   title: 'Kinde Auth',
   description: 'Kinde with NextJS App Router',
@@ -32,18 +41,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        style={{
-          backgroundImage: "url('/images/windowsXPBackground.webp')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-          minHeight: '100vh',
-          margin: 0,
-          padding: 0,
-        }}
-      >
+      <body className={`app-body ${sixtyfour.variable}`}>
         <ConditionalLayout user={user} isAuthenticated={authenticated}>
           {children}
         </ConditionalLayout>
