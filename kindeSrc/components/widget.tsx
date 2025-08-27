@@ -1,5 +1,3 @@
-'use server';
-
 import React from 'react';
 
 type WidgetProps = {
@@ -14,10 +12,10 @@ export const Widget: React.FC<WidgetProps> = (props) => {
   const getRevealedCells = () => {
     if (!props.requestUrl) return [];
     try {
-      const url = new URL(props.requestUrl);
-      const revealed = url.searchParams.get('revealed');
-      if (revealed) {
-        return revealed
+      // Use a simple regex to extract query parameters instead of URL constructor
+      const revealedMatch = props.requestUrl.match(/[?&]revealed=([^&]*)/);
+      if (revealedMatch && revealedMatch[1]) {
+        return revealedMatch[1]
           .split(',')
           .map((n) => parseInt(n))
           .filter((n) => !isNaN(n) && n >= 0 && n < 64);
@@ -30,12 +28,15 @@ export const Widget: React.FC<WidgetProps> = (props) => {
 
   // Generate random auth method positions based on URL seed
   const getAuthMethods = () => {
-    const seedParam = props.requestUrl
-      ? new URL(props.requestUrl).searchParams.get('seed')
-      : null;
-    const seed = seedParam
-      ? parseInt(seedParam)
-      : Math.floor(Math.random() * 100000);
+    let seedParam: string | null = null;
+    if (props.requestUrl) {
+      const seedMatch = props.requestUrl.match(/[?&]seed=([^&]*)/);
+      if (seedMatch && seedMatch[1]) {
+        seedParam = seedMatch[1];
+      }
+    }
+
+    const seed = seedParam ? parseInt(seedParam) : 12345; // Use a fixed default seed for SSR
 
     // Simple seeded random function
     const seededRandom = (seed: number) => {
@@ -121,11 +122,15 @@ export const Widget: React.FC<WidgetProps> = (props) => {
   // Helper to create reveal URL
   const createRevealUrl = (cellIndex: number) => {
     const newRevealed = [...revealedCells, cellIndex].sort((a, b) => a - b);
-    const seedParam = props.requestUrl
-      ? new URL(props.requestUrl).searchParams.get('seed')
-      : null;
+    let seedParam: string | null = null;
+    if (props.requestUrl) {
+      const seedMatch = props.requestUrl.match(/[?&]seed=([^&]*)/);
+      if (seedMatch && seedMatch[1]) {
+        seedParam = seedMatch[1];
+      }
+    }
     const seed = seedParam ? `&seed=${seedParam}` : '';
-    return `?revealed=${newRevealed.join(',')}${seed}&t=${Date.now()}`;
+    return `?revealed=${newRevealed.join(',')}${seed}`;
   };
 
   return (
@@ -149,10 +154,7 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                 <div className="msw-counter">
                   {String(3 - revealedAuthMethods.length).padStart(3, '0')}
                 </div>
-                <a
-                  href={`?seed=${Math.floor(Math.random() * 100000)}`}
-                  className="msw-reset"
-                >
+                <a href="?seed=0" className="msw-reset">
                   😊
                 </a>
                 <div className="msw-counter">000</div>
