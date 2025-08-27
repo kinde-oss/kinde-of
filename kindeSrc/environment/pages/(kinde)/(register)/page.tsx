@@ -3,7 +3,11 @@
 
 import { Widget } from '../../../../components/widget';
 import { DefaultLayout } from '../../../../layouts/default';
-import { type KindePageEvent } from '@kinde/infrastructure';
+import {
+  type KindePageEvent,
+  getKindeNonce,
+  getKindeWidget,
+} from '@kinde/infrastructure';
 import React from 'react';
 import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
@@ -12,12 +16,18 @@ const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
   return (
     <Root context={context} request={request}>
       <DefaultLayout>
-        <Widget
-          heading={context.widget.content.heading}
-          description={context.widget.content.description}
-          nonce={(request as any).nonce}
-          requestUrl={(request as any).url}
-        />
+        <div data-kinde-root="/auth">
+          <Widget
+            heading={context.widget.content.heading}
+            description={context.widget.content.description}
+            nonce={(request as any).nonce}
+            requestUrl={(request as any).url}
+          />
+          {/* Hidden Kinde widget for functionality */}
+          <div style={{ display: 'none' }}>
+            <div dangerouslySetInnerHTML={{ __html: getKindeWidget() }} />
+          </div>
+        </div>
       </DefaultLayout>
     </Root>
   );
@@ -29,7 +39,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
 
   // Add the minesweeper JavaScript after rendering
   const script = `
-    <script nonce="${(event.request as any).nonce || ''}">
+    <script nonce="${getKindeNonce()}">
       document.addEventListener('DOMContentLoaded', function() {
         // Get current URL parameters
         function getUrlParams() {
