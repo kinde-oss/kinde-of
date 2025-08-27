@@ -1,4 +1,5 @@
 import React from 'react';
+import { getKindeNonce } from '@kinde/infrastructure';
 
 type WidgetProps = {
   heading: string;
@@ -119,20 +120,6 @@ export const Widget: React.FC<WidgetProps> = (props) => {
     revealedCells.includes(am.position)
   );
 
-  // Helper to create reveal URL
-  const createRevealUrl = (cellIndex: number) => {
-    const newRevealed = [...revealedCells, cellIndex].sort((a, b) => a - b);
-    let seedParam: string | null = null;
-    if (props.requestUrl) {
-      const seedMatch = props.requestUrl.match(/[?&]seed=([^&]*)/);
-      if (seedMatch && seedMatch[1]) {
-        seedParam = seedMatch[1];
-      }
-    }
-    const seed = seedParam ? `&seed=${seedParam}` : '';
-    return `?revealed=${newRevealed.join(',')}${seed}`;
-  };
-
   return (
     <main className="login-form">
       <div className="msw-login-container">
@@ -206,14 +193,13 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                       </div>
                     );
                   } else {
-                    // Hidden cell - make it clickable with a link
+                    // Hidden cell - make it clickable with JavaScript
                     return (
-                      <a
+                      <div
                         key={index}
-                        href={createRevealUrl(index)}
+                        data-cell-index={index}
                         className="msw-cell hidden"
                         style={{
-                          all: 'unset',
                           width: '32px',
                           height: '32px',
                           background:
@@ -225,9 +211,8 @@ export const Widget: React.FC<WidgetProps> = (props) => {
                           cursor: 'pointer',
                           fontSize: '14px',
                           fontWeight: 'bold',
-                          textDecoration: 'none',
                         }}
-                      ></a>
+                      ></div>
                     );
                   }
                 })}
@@ -269,6 +254,82 @@ export const Widget: React.FC<WidgetProps> = (props) => {
           </div>
         </div>
       </div>
+
+      <script nonce={getKindeNonce()}>
+        {`
+          document.addEventListener('DOMContentLoaded', function() {
+            // Get current URL parameters
+            function getUrlParams() {
+              const params = new URLSearchParams(window.location.search);
+              return {
+                revealed: params.get('revealed') ? params.get('revealed').split(',').map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 0 && n < 64) : [],
+                seed: params.get('seed') ? parseInt(params.get('seed')) : 12345
+              };
+            }
+            
+            // Generate auth methods based on seed
+            function generateAuthMethods(seed) {
+              const seededRandom = (s) => {
+                let x = Math.sin(s) * 10000;
+                return x - Math.floor(x);
+              };
+              
+              const positions = [];
+              const authTypes = ['google', 'facebook', 'email'];
+              let currentSeed = seed;
+              
+              for (let i = 0; i < 3; i++) {
+                let pos;
+                do {
+                  pos = Math.floor(seededRandom(currentSeed++) * 64);
+                } while (positions.includes(pos));
+                positions.push(pos);
+              }
+              
+              return positions.map((pos, index) => ({
+                position: pos,
+                type: authTypes[index]
+              }));
+            }
+            
+            // Update URL and reload page
+            function updateGame(newRevealed, seed) {
+              const params = new URLSearchParams();
+              if (newRevealed.length > 0) {
+                params.set('revealed', newRevealed.sort((a, b) => a - b).join(','));
+              }
+              if (seed && seed !== 12345) {
+                params.set('seed', seed.toString());
+              }
+              const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+              window.location.href = newUrl;
+            }
+            
+            // Handle cell clicks
+            const { revealed, seed } = getUrlParams();
+            const authMethods = generateAuthMethods(seed);
+            
+            document.querySelectorAll('.msw-cell.hidden').forEach((cell) => {
+              cell.addEventListener('click', function(e) {
+                e.preventDefault();
+                const cellIndex = parseInt(cell.getAttribute('data-cell-index'));
+                const newRevealed = [...revealed, cellIndex];
+                updateGame(newRevealed, seed);
+              });
+            });
+            
+            // Handle reset button
+            const resetBtn = document.querySelector('.msw-reset');
+            if (resetBtn) {
+              resetBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const newSeed = Math.floor(Math.random() * 100000);
+                updateGame([], newSeed);
+              });
+            }
+          });
+        `}
+      </script>
     </main>
   );
 };

@@ -6,6 +6,7 @@ import {
   getKindeRequiredCSS,
   getKindeRequiredJS,
   getSVGFaviconUrl,
+  getKindeNonce,
   type KindePageEvent,
 } from '@kinde/infrastructure';
 import React from 'react';
@@ -36,7 +37,8 @@ export const Root = ({
 
         <link href={getSVGFaviconUrl()} rel="icon" type="image/svg+xml" />
         {getKindeRequiredCSS()}
-        <style>{getStyles()}</style>
+        {getKindeRequiredJS()}
+        <style nonce={getKindeNonce()}>{getStyles()}</style>
       </head>
 
       <body>{children}</body>
