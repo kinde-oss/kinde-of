@@ -12,11 +12,8 @@ import React from 'react';
 import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
 import { Applications, init } from '@kinde/management-api-js';
-import MinesweeperAuthMethods from '../../../../components/MinesweeperAuthMethods';
 
-const RegisterPage: React.FC<
-  KindePageEvent & { connections: Array<{ id: string; strategy: string }> }
-> = ({ context, request, connections }) => {
+const RegisterPage: React.FC<KindePageEvent> = ({ context, request }) => {
   return (
     <Root context={context} request={request}>
       <DefaultLayout>
@@ -27,10 +24,7 @@ const RegisterPage: React.FC<
             nonce={(request as any).nonce}
             requestUrl={(request as any).url}
           />
-          {/* Container for dynamically revealed auth methods */}
-          <div id="auth-methods-container">
-            <MinesweeperAuthMethods connections={connections} />
-          </div>
+
           {/* Hidden Kinde widget for functionality */}
           <div style={{ display: 'none' }}>
             <div dangerouslySetInnerHTML={{ __html: getKindeWidget() }} />
@@ -74,7 +68,7 @@ export default async function Page(event: KindePageEvent): Promise<string> {
     ];
   }
 
-  const page = await RegisterPage({ ...event, connections });
+  const page = await RegisterPage(event);
   const pageHtml = renderToString(page);
 
   // Add the minesweeper JavaScript after rendering
@@ -312,9 +306,26 @@ export default async function Page(event: KindePageEvent): Promise<string> {
             }
           });
           
-          // Update auth methods using React component
-          if (window.updateRevealedAuthMethods) {
-            window.updateRevealedAuthMethods(revealedAuthMethods);
+          // Update auth methods section using proper Kinde authentication URLs
+          let authMethodsContainer = document.querySelector('.msw-found-methods');
+          if (revealedAuthMethods.length > 0) {
+            if (!authMethodsContainer) {
+              authMethodsContainer = document.createElement('div');
+              authMethodsContainer.className = 'msw-found-methods';
+              document.querySelector('.msw-game').appendChild(authMethodsContainer);
+            }
+            
+            // Create auth method links using proper Kinde API auth pattern
+            authMethodsContainer.innerHTML = revealedAuthMethods.map(auth => 
+              '<a href="/api/auth/login?connection_id=' + auth.connectionId + '" class="msw-oauth-small ' + auth.type + '">' +
+              '<div class="msw-oauth-icon-small ' + auth.type + '-icon">' +
+              getAuthIcon(auth.type) +
+              '</div>' +
+              auth.type.charAt(0).toUpperCase() + auth.type.slice(1) +
+              '</a>'
+            ).join('');
+          } else if (authMethodsContainer) {
+            authMethodsContainer.remove();
           }
         }
         
