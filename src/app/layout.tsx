@@ -41,6 +41,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          data-domain="kinde-of.com"
+          src="https://plausible.io/js/script.js"
+        ></script>
+      </head>
       <body className={`app-body ${sixtyfour.variable}`}>
         <ConditionalLayout user={user} isAuthenticated={authenticated}>
           {children}
