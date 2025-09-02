@@ -12,6 +12,8 @@ import { renderToString } from 'react-dom/server.browser';
 import { Root } from '../../../../root';
 
 const VerifyEmailPage: React.FC<KindePageEvent> = ({ context, request }) => {
+  console.log('VerifyEmailPage', context);
+
   return (
     <Root context={context} request={request}>
       <DefaultLayout>
