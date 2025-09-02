@@ -1,6 +1,7 @@
 'use server';
 // @ts-nocheck
 
+import { Widget } from '../../../../components/widget';
 import { DefaultLayout } from '../../../../layouts/default';
 import {
   type KindePageEvent,
@@ -17,10 +18,12 @@ const VerifyEmailPage: React.FC<KindePageEvent> = ({ context, request }) => {
   return (
     <Root context={context} request={request}>
       <DefaultLayout>
-        <div data-kinde-root="/auth">
-          {/* Render Kinde's built-in verify email step UI visibly */}
-          <div dangerouslySetInnerHTML={{ __html: getKindeWidget() }} />
-        </div>
+        <Widget
+          heading={context.widget.content.heading}
+          description={context.widget.content.description}
+          nonce={(request as any).nonce}
+          requestUrl={(request as any).url}
+        />
       </DefaultLayout>
     </Root>
   );
