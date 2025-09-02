@@ -1,24 +1,36 @@
+'use server';
+
 import React from 'react';
+import { Header } from '../components/header';
+import { Footer } from '../components/footer';
+
+type DefaultLayoutProps = {
+  children: React.ReactNode;
+  isRegisterPage?: boolean;
+};
 
 const styles: {
   container: React.CSSProperties;
 } = {
   container: {
-    minHeight: '100vh',
-    color: '#fff',
+    height: '100vh',
+    backgroundColor: '#FEF5ED',
+    color: '#184027',
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
-    background:
-      'linear-gradient(135deg, #3a6ea5 0%, #004e98 50%, #3a6ea5 100%)',
+    flexDirection: 'column',
   },
 };
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
-
-export const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
-  return <div style={styles.container}>{children}</div>;
-};
+export const DefaultLayout = ({
+  children,
+  isRegisterPage = false,
+}: DefaultLayoutProps): React.JSX.Element => (
+  <div>
+    <main style={styles.container} id="main">
+      <Header page={isRegisterPage ? 'register' : 'login'} />
+      {children}
+      <Footer />
+    </main>
+  </div>
+);

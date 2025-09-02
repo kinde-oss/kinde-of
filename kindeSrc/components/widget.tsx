@@ -1,251 +1,59 @@
+'use server';
+
+import { getKindeWidget, getLogoUrl } from '@kinde/infrastructure';
 import React from 'react';
 
 type WidgetProps = {
   heading: string;
-  description: string;
-  nonce?: string;
-  requestUrl?: string;
 };
 
-export const Widget: React.FC<WidgetProps> = (props) => {
-  // Parse revealed cells from URL if available
-  const getRevealedCells = () => {
-    if (!props.requestUrl) return [];
-    try {
-      // Use a simple regex to extract query parameters instead of URL constructor
-      const revealedMatch = props.requestUrl.match(/[?&]revealed=([^&]*)/);
-      if (revealedMatch && revealedMatch[1]) {
-        return revealedMatch[1]
-          .split(',')
-          .map((n) => parseInt(n))
-          .filter((n) => !isNaN(n) && n >= 0 && n < 64);
-      }
-    } catch (e) {
-      // Ignore URL parsing errors
-    }
-    return [];
-  };
+const styles: {
+  widgetWrapper: React.CSSProperties;
+  heading: React.CSSProperties;
+  loginForm: React.CSSProperties;
+  loginFormWrapper: React.CSSProperties;
+} = {
+  widgetWrapper: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginForm: {
+    maxWidth: '400px',
+    width: '100%',
+    margin: '0 auto',
+    minInlineSize: '2rem',
+  },
+  loginFormWrapper: {
+    display: 'flex',
+    padding: '2rem',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  heading: {
+    fontSize: '32px',
+    fontWeight: 400,
+    letterSpacing: '-0.02em',
+    marginBottom: '1.5rem',
+  },
+};
 
-  // Generate random auth method positions based on URL seed
-  const getAuthMethods = () => {
-    let seedParam: string | null = null;
-    if (props.requestUrl) {
-      const seedMatch = props.requestUrl.match(/[?&]seed=([^&]*)/);
-      if (seedMatch && seedMatch[1]) {
-        seedParam = seedMatch[1];
-      }
-    }
-
-    const seed = seedParam
-      ? parseInt(seedParam)
-      : Math.floor(Math.random() * 100000); // Use random seed if not specified
-
-    // Simple seeded random function
-    const seededRandom = (seed: number) => {
-      let x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
-    };
-
-    const positions: number[] = [];
-    const authTypes = ['google', 'facebook', 'email'];
-    let currentSeed = seed;
-
-    for (let i = 0; i < 3; i++) {
-      let pos;
-      do {
-        pos = Math.floor(seededRandom(currentSeed++) * 64);
-      } while (positions.includes(pos));
-      positions.push(pos);
-    }
-
-    return positions.map((pos, index) => ({
-      position: pos,
-      type: authTypes[index],
-    }));
-  };
-
-  const authMethods = getAuthMethods();
-
-  const getConnectionId = (type: string) => {
-    switch (type) {
-      case 'google':
-        return 'conn_019872d36897cefc0235b3e946560f7f';
-      case 'facebook':
-        return 'conn_0198a61044542d21e9fa9057f5d14efc';
-      case 'email':
-        return 'conn_01986aa4b37660f9c12738960ed5b36a';
-      default:
-        return '';
-    }
-  };
-
-  const calculateAdjacency = (pos: number) => {
-    const row = Math.floor(pos / 8);
-    const col = pos % 8;
-    let count = 0;
-
-    for (let r = -1; r <= 1; r++) {
-      for (let c = -1; c <= 1; c++) {
-        if (r === 0 && c === 0) continue;
-        const newRow = row + r;
-        const newCol = col + c;
-        if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-          const newPos = newRow * 8 + newCol;
-          if (authMethods.some((am) => am.position === newPos)) {
-            count++;
-          }
-        }
-      }
-    }
-    return count;
-  };
-
-  const getNumberColor = (num: number) => {
-    const colors = [
-      '',
-      '#0000FF',
-      '#008000',
-      '#FF0000',
-      '#800080',
-      '#800000',
-      '#008080',
-      '#000000',
-      '#808080',
-    ];
-    return colors[num] || '#000000';
-  };
-
-  // Use URL state or start with empty game
-  const revealedCells = getRevealedCells();
-  const revealedAuthMethods = authMethods.filter((am) =>
-    revealedCells.includes(am.position)
-  );
-
+export const Widget: React.FC<WidgetProps> = ({ heading }) => {
   return (
-    <main className="login-form">
-      <div className="msw-window">
-        <div className="msw-title-bar">
-          <div className="msw-window-title">Login</div>
-          <div className="msw-window-controls">
-            <div className="msw-window-btn">−</div>
-            <div className="msw-window-btn">□</div>
-            <div className="msw-window-btn">✕</div>
-          </div>
-        </div>
-
-        <div className="msw-content">
-          <div className="msw-main-title">Kindesweeper</div>
-
-          <div className="msw-game">
-            <div className="msw-game-header">
-              <div className="msw-counter" id="msw-bomb-counter">
-                {String(3 - revealedAuthMethods.length).padStart(2, '0')}
-              </div>
-              <a href="?seed=0" className="msw-reset">
-                😊
-              </a>
-              <div className="msw-counter" id="msw-click-counter">
-                00
-              </div>
-            </div>
-
-            <div className="msw-field">
-              {Array.from({ length: 64 }, (_, index) => {
-                const isRevealed = revealedCells.includes(index);
-                const authMethod = authMethods.find(
-                  (am) => am.position === index
-                );
-                const isAuth = !!authMethod;
-                const adjacencyCount = calculateAdjacency(index);
-
-                if (isRevealed) {
-                  return (
-                    <div
-                      key={index}
-                      data-cell-index={index}
-                      className={`msw-cell revealed ${isAuth ? 'auth' : ''}`}
-                      style={{
-                        color:
-                          !isAuth && adjacencyCount > 0
-                            ? getNumberColor(adjacencyCount)
-                            : 'transparent',
-                        backgroundColor: isAuth
-                          ? authMethod?.type === 'google'
-                            ? '#4285f4'
-                            : authMethod?.type === 'facebook'
-                              ? '#1877f2'
-                              : authMethod?.type === 'email'
-                                ? '#ff6b35'
-                                : '#fff'
-                          : undefined,
-                        fontWeight: isAuth ? 'bold' : 'normal',
-                        fontSize: isAuth ? '16px' : '12px',
-                      }}
-                    >
-                      {isAuth
-                        ? authMethod?.type === 'google'
-                          ? 'G'
-                          : authMethod?.type === 'facebook'
-                            ? 'f'
-                            : authMethod?.type === 'email'
-                              ? '✉'
-                              : ''
-                        : adjacencyCount > 0
-                          ? adjacencyCount
-                          : ''}
-                    </div>
-                  );
-                } else {
-                  // Hidden cell - make it clickable with JavaScript
-                  return (
-                    <div
-                      key={index}
-                      data-cell-index={index}
-                      className="msw-cell hidden"
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        background: 'linear-gradient(145deg, #e0e0e0, #c0c0c0)',
-                        border: '2px outset #c0c0c0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                      }}
-                    ></div>
-                  );
-                }
-              })}
-            </div>
-
-            {/* Show auth methods found within the game area */}
-            {revealedAuthMethods.length > 0 && (
-              <div className="msw-found-methods">
-                {revealedAuthMethods.map((auth) => (
-                  <a
-                    key={auth.type}
-                    href={`/api/auth/login?connection_id=${getConnectionId(auth.type)}`}
-                    className={`msw-oauth-small ${auth.type}`}
-                  >
-                    <div className={`msw-oauth-icon-small ${auth.type}-icon`}>
-                      {auth.type === 'google'
-                        ? 'G'
-                        : auth.type === 'facebook'
-                          ? 'f'
-                          : auth.type === 'email'
-                            ? '✉'
-                            : ''}
-                    </div>
-                    {auth.type.charAt(0).toUpperCase() + auth.type.slice(1)}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+    <article style={styles.widgetWrapper}>
+      <div className="sidepanel">
+        <img src={getLogoUrl()} alt={'logo'} />
       </div>
-    </main>
+
+      <main style={styles.loginFormWrapper}>
+        <div style={styles.loginForm}>
+          <h1 style={styles.heading}>{heading}</h1>
+
+          {getKindeWidget()}
+        </div>
+      </main>
+    </article>
   );
 };
