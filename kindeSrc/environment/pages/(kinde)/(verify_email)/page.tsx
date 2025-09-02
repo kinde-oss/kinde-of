@@ -90,6 +90,7 @@ const Layout = async ({ request, context }) => {
 };
 
 export default async function Page(event) {
+  console.log('test123 verify email page', event);
   const page = await Layout({ ...event });
   return renderToString(page);
 }
